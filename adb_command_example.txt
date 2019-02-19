@@ -1,0 +1,70 @@
+
+02/14 15:21:15: Launching app
+$ adb install-multiple -r -t /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/resources/instant-run/debug/resources-debug.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_3.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_4.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_2.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_1.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_0.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_6.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/dep/dependencies.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_5.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_7.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_8.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_9.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/instant-run-apk/debug/app-debug.apk 
+Split APKs installed in 7 s 334 ms
+$ adb shell am start -n "com.example.myapplication/com.example.myapplication.MapsActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
+Client not ready yet..Waiting for process to come online
+Connected to process 27886 on device samsung-sm_a530f-52002888b857459f
+Capturing and displaying logcat messages from application. This behavior can be disabled in the "Logcat output" section of the "Debugger" settings page.
+E/Zygote: isWhitelistProcess - Process is Whitelisted
+W/SELinux: SELinux selinux_android_compute_policy_index : Policy Index[2],  Con:u:r:zygote:s0 RAM:SEPF_SM-A530F_8.0.0_0018, [-1 -1 -1 -1 0 1]
+I/SELinux: SELinux: seapp_context_lookup: seinfo=untrusted, level=s0:c512,c768, pkgname=com.example.myapplication 
+I/zygote64: Late-enabling -Xcheck:jni
+D/ActivityThread: Added TimaKeyStore provider
+I/zygote64: no shared libraies, dex_files: 1
+I/InstantRun: starting instant run server: is main process
+I/zzbz: Making Creator dynamically
+W/zygote64: Skipping duplicate class check due to unrecognized classloader
+I/DynamiteModule: Considering local module com.google.android.gms.maps_dynamite:0 and remote module com.google.android.gms.maps_dynamite:221
+    Selected remote version of com.google.android.gms.maps_dynamite, version >= 221
+V/DynamiteModule: Dynamite loader version >= 2, using loadModule2NoCrashUtils
+W/zygote64: Skipping duplicate class check due to unrecognized classloader
+I/Google Maps Android API: Google Play services client version: 12451000
+I/Google Maps Android API: Google Play services package version: 15090021
+I/zygote64: Do partial code cache collection, code=30KB, data=22KB
+I/zygote64: After code cache collection, code=30KB, data=22KB
+    Increasing code cache capacity to 128KB
+D/OpenGLRenderer: HWUI GL Pipeline
+D/InputTransport: Input channel constructed: fd=108
+D/ViewRootImpl@ef6b8ee[MapsActivity]: setView = DecorView@179718f[MapsActivity] TM=true MM=false
+D/ViewRootImpl@ef6b8ee[MapsActivity]: dispatchAttachedToWindow
+V/Surface: sf_framedrop debug : 0x4f4c, game : false, logging : 0
+D/ViewRootImpl@ef6b8ee[MapsActivity]: Relayout returned: old=[0,0][0,0] new=[0,0][1080,2220] result=0x7 surface={valid=true 515555532800} changed=true
+I/OpenGLRenderer: Initialized EGL, version 1.4
+D/OpenGLRenderer: Swap behavior 2
+D/libGLESv1: STS_GLApi : DTS, ODTC are not allowed for Package : com.example.myapplication
+D/mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, egl_color_buffer_format *, EGLBoolean) returns 0x3000,  [1080x2220]-format:1
+D/OpenGLRenderer: eglCreateWindowSurface = 0x78096a5610, 0x7809812010
+D/ViewRootImpl@ef6b8ee[MapsActivity]: MSG_RESIZED_REPORT: frame=Rect(0, 0 - 1080, 2220) ci=Rect(0, 63 - 0, 126) vi=Rect(0, 63 - 0, 126) or=1
+    MSG_WINDOW_FOCUS_CHANGED 1
+V/InputMethodManager: Starting input: tba=android.view.inputmethod.EditorInfo@1240387 nm : com.example.myapplication ic=null
+I/InputMethodManager: startInputInner - mService.startInputOrWindowGainedFocus
+D/InputTransport: Input channel constructed: fd=116
+V/Surface: sf_framedrop debug : 0x4f4c, game : false, logging : 0
+V/Surface: sf_framedrop debug : 0x4f4c, game : false, logging : 0
+D/mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, egl_color_buffer_format *, EGLBoolean) returns 0x3000,  [1080x2031]-format:2
+V/InputMethodManager: Starting input: tba=android.view.inputmethod.EditorInfo@22fec95 nm : com.example.myapplication ic=null
+D/NetworkSecurityConfig: No Network Security Config specified, using platform default
+I/System.out: (HTTPLog)-Static: isSBSettingEnabled false
+    (HTTPLog)-Static: isSBSettingEnabled false
+I/System.out: (HTTPLog)-Static: isSBSettingEnabled false
+    (HTTPLog)-Static: isSBSettingEnabled false
+I/System.out: (HTTPLog)-Static: isSBSettingEnabled false
+I/System.out: (HTTPLog)-Static: isSBSettingEnabled false
+I/zygote64: Do partial code cache collection, code=58KB, data=52KB
+I/zygote64: After code cache collection, code=58KB, data=52KB
+    Increasing code cache capacity to 256KB
+    Compiler allocated 4MB to compile void xj.a(java.lang.Object, zl)
+W/DynamiteModule: Local module descriptor class for com.google.android.gms.googlecertificates not found.
+I/DynamiteModule: Considering local module com.google.android.gms.googlecertificates:0 and remote module com.google.android.gms.googlecertificates:4
+    Selected remote version of com.google.android.gms.googlecertificates, version >= 4
+W/zygote64: Skipping duplicate class check due to unrecognized classloader
+I/zygote64: Do full code cache collection, code=125KB, data=72KB
+I/zygote64: After code cache collection, code=117KB, data=53KB
+I/zygote64: Do partial code cache collection, code=124KB, data=75KB
+I/zygote64: After code cache collection, code=124KB, data=75KB
+    Increasing code cache capacity to 512KB
+I/zygote64: Compiler allocated 4MB to compile void com.google.maps.api.android.lib6.gmm6.vector.bx.b(javax.microedition.khronos.opengles.GL10)
+I/System.out: (HTTPLog)-Static: isSBSettingEnabled false
+I/System.out: (HTTPLog)-Static: isSBSettingEnabled false
+Application terminated.
