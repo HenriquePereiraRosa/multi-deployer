@@ -1,7 +1,7 @@
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class MultiDeployer extends Application{
@@ -9,9 +9,9 @@ public class MultiDeployer extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		Parent parent = new Pane();
-				
-		Scene scene = new Scene(parent);
+		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("view/Layout1.fxml"));
+		Scene scene = new Scene(root);
+		
 		primaryStage.setScene(scene);
 		primaryStage.show();		
 	}
