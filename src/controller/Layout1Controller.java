@@ -32,6 +32,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Layout1Controller {
 
@@ -77,14 +78,22 @@ public class Layout1Controller {
 		assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'Layout1.fxml'.";
 
 		try {
-			System.out.println("Before init");
+			System.out.println("Initializing the DEBUG bridge.");
 			AndroidDebugBridge.init(false);
-			System.out.println("after init");
 		} catch (Exception e) {
 			txaLog.appendText("Exception in init()");
 			e.printStackTrace();
 		}
 	}
+	
+	public static void closeWindowEvent() {
+        try {
+			System.out.println("Closing the DEBUG bridge.");
+			AndroidDebugBridge.disconnectBridge();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
 
 	@FXML
 	void selectFile(Event event) {
@@ -114,66 +123,12 @@ public class Layout1Controller {
 	@FXML
 	void scanADBDevices(ActionEvent event) {
 
-//    	// Create the libusb context
-//        Context context = new Context();
-//
-//        // Initialize the libusb context
-//        int result = LibUsb.init(context);
-//        if (result < 0)
-//        {
-//            throw new LibUsbException("Unable to initialize libusb", result);
-//        }
-//
-//        // Read the USB device list
-//        DeviceList list = new DeviceList();
-//        result = LibUsb.getDeviceList(context, list);
-//        if (result < 0)
-//        {
-//            throw new LibUsbException("Unable to get device list", result);
-//        }
-//
-//        try
-//        {
-//            // Iterate over all devices and list them
-//            for (Device device: list)
-//            {
-//                int address = LibUsb.getDeviceAddress(device);
-//                int busNumber = LibUsb.getBusNumber(device);
-//                DeviceDescriptor descriptor = new DeviceDescriptor();
-//                result = LibUsb.getDeviceDescriptor(device, descriptor);
-//                if (result < 0)
-//                {
-//                    throw new LibUsbException(
-//                        "Unable to read device descriptor", result);
-//                }
-//                System.out.format(
-//                    "Bus %03d, Device %03d: Vendor %04x, Product %04x%n",
-//                    busNumber, address, descriptor.idVendor(),
-//                    descriptor.idProduct());
-//                
-//                txaLog.appendText(device + " | " + descriptor.iSerialNumber() + " | "
-//                		+ descriptor.idVendor()+ " | " + descriptor.bDeviceClass() + "\n");
-//            }
-//            
-//            ObservableList<DeviceList> options = 
-//            	    FXCollections.observableArrayList(list);
-//            cbxDevices = new ComboBox<DeviceList>(options);
-//            cbxDevices.setDisable(false);	
-//        }
-//        finally
-//        {
-//            // Ensure the allocated device list is freed
-//            LibUsb.freeDeviceList(list, true);
-//        }
-//
-//        // Deinitialize the libusb context
-//        LibUsb.exit(context); 
-
+		progressBar.setProgress(0.2);
 		AndroidDebugBridge adb = AndroidDebugBridge.createBridge("/home/user/Android/Sdk/platform-tools/adb", true);
 		if (adb == null) {
 			System.err.println("Invalid ADB location.");
 			txaLog.appendText("Erro na localizaçao do ADB. \n");
-			System.exit(1);
+			return;
 		} else {
 			txaLog.appendText("DEVICES: \n");
 			for (IDevice device : adb.getDevices()) {
@@ -202,6 +157,7 @@ public class Layout1Controller {
 
 			@Override
 			public void deviceConnected(IDevice device) {
+				progressBar.setProgress(1.0);
 				System.out.println(String.format("%s connected", device.getSerialNumber()));
 				try {
 					txaLog.appendText("Connected: " + device.getName() + " BAT LEVEL: "
@@ -218,6 +174,7 @@ public class Layout1Controller {
 
 			@Override
 			public void deviceDisconnected(IDevice device) {
+				progressBar.setProgress(0.0);
 				System.out.println(String.format("%s disconnected", device.getSerialNumber()));
 				txaLog.appendText("Disconnected: " + device.toString() + "\n");
 				btnDeploy.setDisable(true);
@@ -253,19 +210,25 @@ public class Layout1Controller {
 			};
     		StringBuffer command  = new StringBuffer();
     		command.append("adb install -r -t ");
-    		command.append(file.getPath());
+    		command.append(file.getPath()); // TODO: Exception when file is null.
     		txaLog.appendText("Command: " + command.toString() + "\n");
     		this.device.executeShellCommand(command.toString(), receiver);
     	} catch (TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException |
     			IOException e) {
     		e.printStackTrace();
     	} catch (NullPointerException npe) {
-    		System.out.println("Null PointerException occured...\n");
+    		System.out.println("NullPointerException occured...\n");
     		txaLog.appendText("NullPointerException occured...\n");
-    		npe.printStackTrace();
+    		if (file.getPath().isEmpty()) {
+    		System.out.println("File Path: " + file.getPath() + "\n");
+    		txaLog.appendText("File Path: " + file.getPath() + "\n");
+    		} else {
+    			npe.printStackTrace();
+	    		System.out.println(npe.getCause());
+	    		}
     	} catch (Exception e) {
-		System.out.println("Generic Exception occured...\n");
-		txaLog.appendText("Generic Exception occured..\n");
+		System.out.println("Exception occured...\n");
+		txaLog.appendText("Exception occured..\n");
 		e.printStackTrace();
 	}
 

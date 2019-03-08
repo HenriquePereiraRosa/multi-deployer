@@ -1,3 +1,4 @@
+import controller.Layout1Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,7 +14,12 @@ public class MultiDeployer extends Application{
 		Scene scene = new Scene(root);
 		
 		primaryStage.setScene(scene);
-		primaryStage.show();		
+		primaryStage.show();
+		
+		
+		primaryStage.setOnCloseRequest(event -> {
+			Layout1Controller.closeWindowEvent();
+		});;
 	}
 
 }
