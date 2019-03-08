@@ -89,7 +89,7 @@ public class Layout1Controller {
 	public static void closeWindowEvent() {
         try {
 			System.out.println("Closing the DEBUG bridge.");
-			AndroidDebugBridge.disconnectBridge();
+			AndroidDebugBridge.terminate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -123,7 +123,7 @@ public class Layout1Controller {
 	@FXML
 	void scanADBDevices(ActionEvent event) {
 
-		progressBar.setProgress(0.2);
+		progressBar.setProgress(0.5);
 		AndroidDebugBridge adb = AndroidDebugBridge.createBridge("/home/user/Android/Sdk/platform-tools/adb", true);
 		if (adb == null) {
 			System.err.println("Invalid ADB location.");
