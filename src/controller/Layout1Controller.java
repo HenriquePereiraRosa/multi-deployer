@@ -1,10 +1,19 @@
 package controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 
@@ -13,11 +22,10 @@ import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.IShellOutputReceiver;
+import com.android.ddmlib.NullOutputReceiver;
 import com.android.ddmlib.ShellCommandUnresponsiveException;
 import com.android.ddmlib.TimeoutException;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -32,13 +40,13 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class Layout1Controller {
 
 	final FileChooser fileChooser = new FileChooser();
-	private IDevice device;
+	private AndroidDebugBridge adb;
 	private File file;
+	private String apkPath;
 
 	@FXML
 	private ResourceBundle resources;
@@ -77,6 +85,8 @@ public class Layout1Controller {
 		assert btnScan != null : "fx:id=\"btnScan\" was not injected: check your FXML file 'Layout1.fxml'.";
 		assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'Layout1.fxml'.";
 
+		txtFieldFileAddress.setFocusTraversable(false);
+
 		try {
 			System.out.println("Initializing the DEBUG bridge.");
 			AndroidDebugBridge.init(false);
@@ -84,16 +94,44 @@ public class Layout1Controller {
 			txaLog.appendText("Exception in init()");
 			e.printStackTrace();
 		}
+
+		Properties prop = new Properties();
+		InputStream input = null;
+
+		try {
+			input = new FileInputStream("file.path");
+
+			// load a properties file
+			prop.load(input);
+			
+			// get the property value and print it out
+			System.out.println(prop.getProperty("apkPath"));
+			apkPath = prop.getProperty("apkPath");
+			txtFieldFileAddress.setText(apkPath);
+			file = new File(apkPath);
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
-	
-	public static void closeWindowEvent() {
-        try {
+
+	public void closeWindowEvent() {
+		try {
 			System.out.println("Closing the DEBUG bridge.");
 			AndroidDebugBridge.terminate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    }
+	}
 
 	@FXML
 	void selectFile(Event event) {
@@ -108,12 +146,42 @@ public class Layout1Controller {
 
 		file = fileChooser.showOpenDialog(stage);
 
-		txaLog.appendText("Mouse clicked in TxtFieldFileAddress. On " + localDate + "_" + localTime + ".\n");
+//		txaLog.appendText("Mouse clicked in TxtFieldFileAddress. On " + localDate + "_" + localTime + ".\n");
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Applications files", "*.apk"));
 		if (file != null) {
-			txaLog.appendText(file.getPath() + "\n");
-			txtFieldFileAddress.setText(file.getPath());
+			apkPath = file.getPath();
+			txaLog.appendText(apkPath + "\n");
+			txtFieldFileAddress.setText(apkPath);
+
+			Properties prop = new Properties();
+			OutputStream output = null;
+
+			try {
+				output = new FileOutputStream("file.path");
+
+				// set the properties value
+				prop.setProperty("apkPath", apkPath);
+
+				// save properties to project root folder
+				prop.store(output, null);
+
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			} catch (NullPointerException npe) {
+				System.out.println("Output: " + output);
+				npe.printStackTrace();
+
+			} finally {
+				if (output != null) {
+					try {
+						output.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
 		} else {
 			txaLog.appendText("No file selected. \n");
 		}
@@ -124,14 +192,23 @@ public class Layout1Controller {
 	void scanADBDevices(ActionEvent event) {
 
 		progressBar.setProgress(0.5);
-		AndroidDebugBridge adb = AndroidDebugBridge.createBridge("/home/user/Android/Sdk/platform-tools/adb", true);
-		if (adb == null) {
+		this.adb = AndroidDebugBridge.createBridge("/home/user/Android/Sdk/platform-tools/adb", true); // TODO:
+																														// create
+																														// multiplataform
+																														// (Add
+																														// windows
+																														// ADB
+																														// path
+																														// trough
+																														// an
+																														// FileChooser).
+		if (this.adb == null) {
 			System.err.println("Invalid ADB location.");
 			txaLog.appendText("Erro na localizaçao do ADB. \n");
 			return;
 		} else {
 			txaLog.appendText("DEVICES: \n");
-			for (IDevice device : adb.getDevices()) {
+			for (IDevice device : this.adb.getDevices()) {
 				txaLog.appendText(device.getName() + "|" + device.getSerialNumber() + "\n");
 			}
 		}
@@ -147,10 +224,8 @@ public class Layout1Controller {
 
 					btnDeploy.setDisable(false);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -164,10 +239,8 @@ public class Layout1Controller {
 							+ device.getBattery().get().toString() + "%\n");
 					btnDeploy.setDisable(false);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -185,54 +258,59 @@ public class Layout1Controller {
 	}
 
 	@FXML
-    void deploy(ActionEvent event) {
-    	try {
-    		IShellOutputReceiver receiver = new IShellOutputReceiver() {
+	void deploy(ActionEvent event) {
+
+		try {
+			// IShellOutputReceiver receiver = new NullOutputReceiver();
+			
+			IShellOutputReceiver receiver = new IShellOutputReceiver() {
 				
 				@Override
 				public boolean isCancelled() {
-		    		txaLog.appendText("IshellOutputReceiver.isCancelled(); \n");
+					System.out.println("Receiver.isCancelled()");
 					return false;
 				}
 				
 				@Override
 				public void flush() {
-		    		txaLog.appendText("IshellOutputReceiver.flush(); \n");
+					System.out.println("Receiver.flush()");
 					
 				}
 				
 				@Override
 				public void addOutput(byte[] arg0, int arg1, int arg2) {
-		    		txaLog.appendText("IshellOutputReceiver.addOutput(); "
-		    				+ "ARG0 " + arg0 + "ARG1 " + arg1 + "ARG2 " + arg2 + "\n");
-					
+					System.out.println("Outputs: Arg0: " + arg0 + "Arg1: " + arg1 + "Arg2: " + arg2 + "\n" );
 				}
 			};
-    		StringBuffer command  = new StringBuffer();
-    		command.append("adb install -r -t ");
-    		command.append(file.getPath()); // TODO: Exception when file is null.
-    		txaLog.appendText("Command: " + command.toString() + "\n");
-    		this.device.executeShellCommand(command.toString(), receiver);
-    	} catch (TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException |
-    			IOException e) {
-    		e.printStackTrace();
-    	} catch (NullPointerException npe) {
-    		System.out.println("NullPointerException occured...\n");
-    		txaLog.appendText("NullPointerException occured...\n");
-    		if (file.getPath().isEmpty()) {
-    		System.out.println("File Path: " + file.getPath() + "\n");
-    		txaLog.appendText("File Path: " + file.getPath() + "\n");
-    		} else {
-    			npe.printStackTrace();
-	    		System.out.println(npe.getCause());
-	    		}
-    	} catch (Exception e) {
-		System.out.println("Exception occured...\n");
-		txaLog.appendText("Exception occured..\n");
-		e.printStackTrace();
-	}
+			
+			for (IDevice device : this.adb.getDevices()) {
+				StringBuffer command = new StringBuffer("adb install-multiple -r -t ");
+				command.append(file.getPath()); // TODO: Exception when file is null.
+				txaLog.appendText("Command: " + command.toString() + "\n");
+				device.executeShellCommand(command.toString(), receiver);
+				command = new StringBuffer("adb shell monkey -p app.package.name -c android.intent.category.LAUNCHER 1");
+				txaLog.appendText("Command: " + command.toString() + "\n");
+				device.executeShellCommand(command.toString(), receiver);
+			}
+		} catch (TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException | IOException e) {
+			e.printStackTrace();
+		} catch (NullPointerException npe) {
+			System.out.println("NullPointerException occured...\n");
+			txaLog.appendText("NullPointerException occured...\n");
+			if (file.getPath().isEmpty()) {
+				System.out.println("File Path: " + file.getPath() + "\n");
+				txaLog.appendText("File Path: " + file.getPath() + "\n");
+			} else {
+				npe.printStackTrace();
+				System.out.println(npe.getCause());
+			}
+		} catch (Exception e) {
+			System.out.println("Exception occured...\n");
+			txaLog.appendText("Exception occured..\n");
+			e.printStackTrace();
+		}
 
-    }
+	}
 
 	@FXML
 	void ClearHistory(ActionEvent event) {
