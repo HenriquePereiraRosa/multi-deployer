@@ -260,6 +260,7 @@ public class Layout1Controller {
 	@FXML
 	void deploy(ActionEvent event) {
 
+		IDevice devices[];
 		try {
 			// IShellOutputReceiver receiver = new NullOutputReceiver();
 			
@@ -279,18 +280,24 @@ public class Layout1Controller {
 				
 				@Override
 				public void addOutput(byte[] arg0, int arg1, int arg2) {
-					System.out.println("Outputs: Arg0: " + arg0 + "Arg1: " + arg1 + "Arg2: " + arg2 + "\n" );
+					System.out.println("Outputs: Arg0: " + arg0 + " | Arg1: " + arg1 + " | Arg2: " + arg2 + "\n" );
 				}
 			};
 			
-			for (IDevice device : this.adb.getDevices()) {
+			devices = this.adb.getDevices();
+			
+			for (int i = 0; i < devices.length; i++) {
 				StringBuffer command = new StringBuffer("adb install-multiple -r -t ");
 				command.append(file.getPath()); // TODO: Exception when file is null.
 				txaLog.appendText("Command: " + command.toString() + "\n");
-				device.executeShellCommand(command.toString(), receiver);
-				command = new StringBuffer("adb shell monkey -p app.package.name -c android.intent.category.LAUNCHER 1");
+				devices[i].executeShellCommand(command.toString(), receiver);
+				Thread.sleep(2000);
+				//command = new StringBuffer("adb shell monkey -p app.package.name -c android.intent.category.LAUNCHER 1");
+				//command = new StringBuffer("adb shell am start -n \"com.example.myapplication/com.example.myapplication.MapsActivity\" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER");
+				command = new StringBuffer("adb shell am start -n \"com.example.myapplication/com.example.myapplication.MapsActivity\"");
 				txaLog.appendText("Command: " + command.toString() + "\n");
-				device.executeShellCommand(command.toString(), receiver);
+				devices[i].executeShellCommand(command.toString(), receiver);
+				devices[i].installPackage(apkPath, true, "-r");
 			}
 		} catch (TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException | IOException e) {
 			e.printStackTrace();
