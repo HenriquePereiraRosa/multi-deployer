@@ -1,10 +1,12 @@
 package controller;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
@@ -47,6 +49,10 @@ public class Layout1Controller {
 	private AndroidDebugBridge adb;
 	private File file;
 	private String apkPath;
+	
+	IDevice devices[];
+	ProcessBuilder processBuilder = new ProcessBuilder();
+	Properties systemProp = System.getProperties();
 
 	@FXML
 	private ResourceBundle resources;
@@ -61,16 +67,22 @@ public class Layout1Controller {
 	private ProgressBar progressBar;
 
 	@FXML
-	private Button btnDeploy;
+	private TextField txtFieldADBPath;
 
 	@FXML
-	private TextArea txaLog;
+	private Button btnScan;
 
 	@FXML
 	private ComboBox<?> cbxDevices;
 
 	@FXML
-	private Button btnScan;
+	private Button btnInstall;
+
+	@FXML
+	private Button btnLaunch;
+
+	@FXML
+	private TextArea txaLog;
 
 	@FXML
 	private Button btnClear;
@@ -79,10 +91,12 @@ public class Layout1Controller {
 	void initialize() {
 		assert txtFieldFileAddress != null : "fx:id=\"txtFieldFileAddress\" was not injected: check your FXML file 'Layout1.fxml'.";
 		assert progressBar != null : "fx:id=\"progressBar\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnDeploy != null : "fx:id=\"btnDeploy\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert txaLog != null : "fx:id=\"txaLog\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert cbxDevices != null : "fx:id=\"cbxDevices\" was not injected: check your FXML file 'Layout1.fxml'.";
+		assert txtFieldADBPath != null : "fx:id=\"txtFieldADBPath\" was not injected: check your FXML file 'Layout1.fxml'.";
 		assert btnScan != null : "fx:id=\"btnScan\" was not injected: check your FXML file 'Layout1.fxml'.";
+		assert cbxDevices != null : "fx:id=\"cbxDevices\" was not injected: check your FXML file 'Layout1.fxml'.";
+		assert btnInstall != null : "fx:id=\"btnInstall\" was not injected: check your FXML file 'Layout1.fxml'.";
+		assert btnLaunch != null : "fx:id=\"btnLaunch\" was not injected: check your FXML file 'Layout1.fxml'.";
+		assert txaLog != null : "fx:id=\"txaLog\" was not injected: check your FXML file 'Layout1.fxml'.";
 		assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'Layout1.fxml'.";
 
 		txtFieldFileAddress.setFocusTraversable(false);
@@ -103,7 +117,7 @@ public class Layout1Controller {
 
 			// load a properties file
 			prop.load(input);
-			
+
 			// get the property value and print it out
 			System.out.println(prop.getProperty("apkPath"));
 			apkPath = prop.getProperty("apkPath");
@@ -193,15 +207,15 @@ public class Layout1Controller {
 
 		progressBar.setProgress(0.5);
 		this.adb = AndroidDebugBridge.createBridge("/home/user/Android/Sdk/platform-tools/adb", true); // TODO:
-																														// create
-																														// multiplataform
-																														// (Add
-																														// windows
-																														// ADB
-																														// path
-																														// trough
-																														// an
-																														// FileChooser).
+																										// create
+																										// multiplataform
+																										// (Add
+																										// windows
+																										// ADB
+																										// path
+																										// trough
+																										// an
+																										// FileChooser).
 		if (this.adb == null) {
 			System.err.println("Invalid ADB location.");
 			txaLog.appendText("Erro na localizaçao do ADB. \n");
@@ -222,7 +236,7 @@ public class Layout1Controller {
 					txaLog.appendText("Changed: " + device.getName() + " BAT LEVEL: "
 							+ device.getBattery().get().toString() + "%\n");
 
-					btnDeploy.setDisable(false);
+					btnLaunch.setDisable(false);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} catch (ExecutionException e) {
@@ -237,7 +251,7 @@ public class Layout1Controller {
 				try {
 					txaLog.appendText("Connected: " + device.getName() + " BAT LEVEL: "
 							+ device.getBattery().get().toString() + "%\n");
-					btnDeploy.setDisable(false);
+					btnLaunch.setDisable(false);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} catch (ExecutionException e) {
@@ -250,7 +264,7 @@ public class Layout1Controller {
 				progressBar.setProgress(0.0);
 				System.out.println(String.format("%s disconnected", device.getSerialNumber()));
 				txaLog.appendText("Disconnected: " + device.toString() + "\n");
-				btnDeploy.setDisable(true);
+				btnLaunch.setDisable(true);
 			}
 
 		});
@@ -258,49 +272,30 @@ public class Layout1Controller {
 	}
 
 	@FXML
-	void deploy(ActionEvent event) {
+	void install(ActionEvent event) {
 
-		IDevice devices[];
 		try {
-			// IShellOutputReceiver receiver = new NullOutputReceiver();
-			
-			IShellOutputReceiver receiver = new IShellOutputReceiver() {
-				
-				@Override
-				public boolean isCancelled() {
-					System.out.println("Receiver.isCancelled()");
-					return false;
-				}
-				
-				@Override
-				public void flush() {
-					System.out.println("Receiver.flush()");
-					
-				}
-				
-				@Override
-				public void addOutput(byte[] arg0, int arg1, int arg2) {
-					System.out.println("Outputs: Arg0: " + arg0 + " | Arg1: " + arg1 + " | Arg2: " + arg2 + "\n" );
-				}
-			};
-			
+			System.out.println("Detected OS: " + systemProp.getProperty("os.name")); // TODO: to remove.
+
 			devices = this.adb.getDevices();
-			
 			for (int i = 0; i < devices.length; i++) {
-				StringBuffer command = new StringBuffer("adb install-multiple -r -t ");
-				command.append(file.getPath()); // TODO: Exception when file is null.
-				txaLog.appendText("Command: " + command.toString() + "\n");
-				devices[i].executeShellCommand(command.toString(), receiver);
-				Thread.sleep(2000);
-				//command = new StringBuffer("adb shell monkey -p app.package.name -c android.intent.category.LAUNCHER 1");
-				//command = new StringBuffer("adb shell am start -n \"com.example.myapplication/com.example.myapplication.MapsActivity\" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER");
-				command = new StringBuffer("adb shell am start -n \"com.example.myapplication/com.example.myapplication.MapsActivity\"");
-				txaLog.appendText("Command: " + command.toString() + "\n");
-				devices[i].executeShellCommand(command.toString(), receiver);
+				txaLog.appendText("Installing .apk...\n");
 				devices[i].installPackage(apkPath, true, "-r");
 			}
-		} catch (TimeoutException | AdbCommandRejectedException | ShellCommandUnresponsiveException | IOException e) {
-			e.printStackTrace();
+
+//			for (int i = 0; i < devices.length; i++) {
+//				StringBuffer command = new StringBuffer("adb install-multiple -r -t ");
+//				command.append(file.getPath()); // TODO: Exception when file is null.
+//				txaLog.appendText("Command: " + command.toString() + "\n");
+//				devices[i].executeShellCommand(command.toString(), receiver);
+//				devices[i].installPackage(apkPath, true, "-r");
+//				Thread.sleep(7000);
+//				//command = new StringBuffer("adb shell monkey -p app.package.name -c android.intent.category.LAUNCHER 1");
+//				//command = new StringBuffer("adb shell am start -n \"com.example.myapplication/com.example.myapplication.MapsActivity\" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER");
+//				command = new StringBuffer("adb shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
+//				txaLog.appendText("Command: " + command.toString() + "\n");
+//				devices[i].executeShellCommand(command.toString(), receiver);
+//			}
 		} catch (NullPointerException npe) {
 			System.out.println("NullPointerException occured...\n");
 			txaLog.appendText("NullPointerException occured...\n");
@@ -319,6 +314,82 @@ public class Layout1Controller {
 
 	}
 
+	@FXML
+	void launch(ActionEvent event) {
+
+		try {
+			// IShellOutputReceiver receiver = new NullOutputReceiver();
+
+//			IShellOutputReceiver receiver = new IShellOutputReceiver() {
+//
+//				@Override
+//				public boolean isCancelled() {
+//					System.out.println("Receiver.isCancelled()");
+//					return false;
+//				}
+//
+//				@Override
+//				public void flush() {
+//					System.out.println("Receiver.flush()");
+//
+//				}
+//
+//				@Override
+//				public void addOutput(byte[] arg0, int arg1, int arg2) {
+//					System.out.println("Outputs: Arg0: " + arg0 + " | Arg1: " + arg1 + " | Arg2: " + arg2 + "\n");
+//				}
+//			};
+
+			if (systemProp.getProperty("os.name").equalsIgnoreCase("windows")) {
+				processBuilder.command("cmd.exe", "/c",
+						"./adb shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
+			} else if (systemProp.getProperty("os.name").equalsIgnoreCase("linux")
+					|| systemProp.getProperty("os.name").indexOf("mac") > 0) {
+				processBuilder.command("bash", "-c",
+						"./adb shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
+			} else {
+				txaLog.appendText("Aborting command due a not supported OS.");
+				return;
+			}
+
+			Process process = processBuilder.start();
+			txaLog.appendText("Command: processBuilder.start sended.\n");
+
+//			for (int i = 0; i < devices.length; i++) {
+//				txaLog.appendText("Sending command. Device " + i + " \n");
+//				StringBuffer command = new StringBuffer(
+//						"adb shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
+//				devices[i].executeShellCommand(command.toString(), receiver);
+//			}
+
+			StringBuilder output = new StringBuilder();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+				txaLog.appendText("reader.readLine(): " + line + "\n");
+				output.append(line + "\n");
+			}
+		} catch (IOException e) {
+			txaLog.appendText("IOException occured..\n");
+			e.printStackTrace();
+		} catch (NullPointerException npe) {
+			System.out.println("NullPointerException occured...\n");
+			txaLog.appendText("NullPointerException occured...\n");
+			if (file.getPath().isEmpty()) {
+				System.out.println("File Path: " + file.getPath() + "\n");
+				txaLog.appendText("File Path: " + file.getPath() + "\n");
+			} else {
+				npe.printStackTrace();
+				System.out.println(npe.getCause());
+			}
+		} catch (Exception e) {
+			System.out.println("Exception occured...\n");
+			txaLog.appendText("Exception occured..\n");
+			e.printStackTrace();
+		}
+	}
+	
 	@FXML
 	void ClearHistory(ActionEvent event) {
 		txaLog.clear();
