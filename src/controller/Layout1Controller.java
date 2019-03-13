@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -28,6 +30,8 @@ import com.android.ddmlib.NullOutputReceiver;
 import com.android.ddmlib.ShellCommandUnresponsiveException;
 import com.android.ddmlib.TimeoutException;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -49,7 +53,7 @@ public class Layout1Controller {
 	private AndroidDebugBridge adb;
 	private File file;
 	private String apkPath;
-	
+
 	IDevice devices[];
 	ProcessBuilder processBuilder = new ProcessBuilder();
 	Properties systemProp = System.getProperties();
@@ -73,7 +77,7 @@ public class Layout1Controller {
 	private Button btnScan;
 
 	@FXML
-	private ComboBox<?> cbxDevices;
+	private final ComboBox<String> cbxDevices = new ComboBox<String>();
 
 	@FXML
 	private Button btnInstall;
@@ -100,6 +104,7 @@ public class Layout1Controller {
 		assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'Layout1.fxml'.";
 
 		txtFieldFileAddress.setFocusTraversable(false);
+		txaLog.appendText("Detected OS: " + systemProp.getProperty("os.name") + ".\n"); // TODO: to remove.
 
 		try {
 			System.out.println("Initializing the DEBUG bridge.");
@@ -159,8 +164,6 @@ public class Layout1Controller {
 		stage.setScene(scene);
 
 		file = fileChooser.showOpenDialog(stage);
-
-//		txaLog.appendText("Mouse clicked in TxtFieldFileAddress. On " + localDate + "_" + localTime + ".\n");
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Applications files", "*.apk"));
 		if (file != null) {
@@ -222,8 +225,10 @@ public class Layout1Controller {
 			return;
 		} else {
 			txaLog.appendText("DEVICES: \n");
+			devices = this.adb.getDevices();
 			for (IDevice device : this.adb.getDevices()) {
 				txaLog.appendText(device.getName() + "|" + device.getSerialNumber() + "\n");
+				cbxDevices.getItems().add(device.getName());
 			}
 		}
 
@@ -236,6 +241,7 @@ public class Layout1Controller {
 					txaLog.appendText("Changed: " + device.getName() + " BAT LEVEL: "
 							+ device.getBattery().get().toString() + "%\n");
 
+					devices = adb.getDevices();
 					btnLaunch.setDisable(false);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -251,6 +257,8 @@ public class Layout1Controller {
 				try {
 					txaLog.appendText("Connected: " + device.getName() + " BAT LEVEL: "
 							+ device.getBattery().get().toString() + "%\n");
+					devices = adb.getDevices();
+					cbxDevices.getItems().add(device.getName());
 					btnLaunch.setDisable(false);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -275,27 +283,10 @@ public class Layout1Controller {
 	void install(ActionEvent event) {
 
 		try {
-			System.out.println("Detected OS: " + systemProp.getProperty("os.name")); // TODO: to remove.
-
-			devices = this.adb.getDevices();
 			for (int i = 0; i < devices.length; i++) {
 				txaLog.appendText("Installing .apk...\n");
 				devices[i].installPackage(apkPath, true, "-r");
 			}
-
-//			for (int i = 0; i < devices.length; i++) {
-//				StringBuffer command = new StringBuffer("adb install-multiple -r -t ");
-//				command.append(file.getPath()); // TODO: Exception when file is null.
-//				txaLog.appendText("Command: " + command.toString() + "\n");
-//				devices[i].executeShellCommand(command.toString(), receiver);
-//				devices[i].installPackage(apkPath, true, "-r");
-//				Thread.sleep(7000);
-//				//command = new StringBuffer("adb shell monkey -p app.package.name -c android.intent.category.LAUNCHER 1");
-//				//command = new StringBuffer("adb shell am start -n \"com.example.myapplication/com.example.myapplication.MapsActivity\" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER");
-//				command = new StringBuffer("adb shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
-//				txaLog.appendText("Command: " + command.toString() + "\n");
-//				devices[i].executeShellCommand(command.toString(), receiver);
-//			}
 		} catch (NullPointerException npe) {
 			System.out.println("NullPointerException occured...\n");
 			txaLog.appendText("NullPointerException occured...\n");
@@ -316,59 +307,46 @@ public class Layout1Controller {
 
 	@FXML
 	void launch(ActionEvent event) {
+		
+		boolean tryAgain = true;
 
 		try {
-			// IShellOutputReceiver receiver = new NullOutputReceiver();
-
-//			IShellOutputReceiver receiver = new IShellOutputReceiver() {
-//
-//				@Override
-//				public boolean isCancelled() {
-//					System.out.println("Receiver.isCancelled()");
-//					return false;
-//				}
-//
-//				@Override
-//				public void flush() {
-//					System.out.println("Receiver.flush()");
-//
-//				}
-//
-//				@Override
-//				public void addOutput(byte[] arg0, int arg1, int arg2) {
-//					System.out.println("Outputs: Arg0: " + arg0 + " | Arg1: " + arg1 + " | Arg2: " + arg2 + "\n");
-//				}
-//			};
-
-			if (systemProp.getProperty("os.name").equalsIgnoreCase("windows")) {
-				processBuilder.command("cmd.exe", "/c",
-						"./adb shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
-			} else if (systemProp.getProperty("os.name").equalsIgnoreCase("linux")
-					|| systemProp.getProperty("os.name").indexOf("mac") > 0) {
-				processBuilder.command("bash", "-c",
-						"./adb shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
-			} else {
-				txaLog.appendText("Aborting command due a not supported OS.");
-				return;
+			
+			if (devices == null) {
+				this.scanADBDevices(event);
 			}
 
-			Process process = processBuilder.start();
-			txaLog.appendText("Command: processBuilder.start sended.\n");
+			for (int i = 0; i < devices.length; i++) {
 
-//			for (int i = 0; i < devices.length; i++) {
-//				txaLog.appendText("Sending command. Device " + i + " \n");
-//				StringBuffer command = new StringBuffer(
-//						"adb shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
-//				devices[i].executeShellCommand(command.toString(), receiver);
-//			}
+				if (systemProp.getProperty("os.name").equalsIgnoreCase("windows")) {
+					processBuilder.command("cmd.exe", "/c",
+							"adb -s " + devices[i].getSerialNumber() + " shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
+				} else if (systemProp.getProperty("os.name").equalsIgnoreCase("linux")
+						|| systemProp.getProperty("os.name").indexOf("mac") > 0) {
+					processBuilder.command("bash", "-c",
+							"adb -s " + devices[i].getSerialNumber() + "  shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
+				} else {
+					txaLog.appendText("Aborting command due a not supported OS.");
+					return;
+				}
 
-			StringBuilder output = new StringBuilder();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				Process process = processBuilder.start();
+				txaLog.appendText("Command: processBuilder.start sended.\n");
 
-			String line;
-			while ((line = reader.readLine()) != null) {
-				txaLog.appendText("reader.readLine(): " + line + "\n");
-				output.append(line + "\n");
+				txaLog.appendText("Command sent to Device " + i + " \n");
+
+				StringBuilder output = new StringBuilder();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+				String line;
+				while ((line = reader.readLine()) != null) {
+					txaLog.appendText("reader.readLine(): " + line + "\n");
+					output.append(line + "\n");
+				}
+				if((i > (devices.length - 1)) && tryAgain) {
+					i = 0;
+					tryAgain = false;
+				}
 			}
 		} catch (IOException e) {
 			txaLog.appendText("IOException occured..\n");
@@ -389,7 +367,7 @@ public class Layout1Controller {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@FXML
 	void ClearHistory(ActionEvent event) {
 		txaLog.clear();
