@@ -9,32 +9,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener;
 import com.android.ddmlib.IDevice;
-import com.android.ddmlib.IShellOutputReceiver;
 import com.android.ddmlib.InstallException;
-import com.android.ddmlib.NullOutputReceiver;
-import com.android.ddmlib.ShellCommandUnresponsiveException;
-import com.android.ddmlib.TimeoutException;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import controller.util.AppHelper;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -50,12 +34,13 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import net.dongliu.apk.parser.ApkFile;
 
 public class Layout1Controller {
 
 	final FileChooser fileChooser = new FileChooser();
 	private AndroidDebugBridge adb;
-	private String appPath, adbPath;
+	private AppHelper helper;
 
 	private IDevice devices[];
 	private ProcessBuilder processBuilder = new ProcessBuilder();
@@ -96,6 +81,9 @@ public class Layout1Controller {
 		assert txaLog != null : "fx:id=\"txaLog\" was not injected: check your FXML file 'Layout1.fxml'.";
 		assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'Layout1.fxml'.";
 
+		
+		helper = new AppHelper();
+		
 		txtFieldAppPath.setFocusTraversable(false);
 		txaLog.appendText("Detected OS: " + System.getProperty("os.name") + ".\n"); // TODO: to remove.
 				
@@ -114,17 +102,17 @@ public class Layout1Controller {
 			input = new FileInputStream("file.path");
 			
 			prop.load(input);
-			appPath = prop.getProperty("appPath");
-			System.out.println(appPath);
+			helper.setAppPath(prop.getProperty("appPath"));
+			System.out.println(helper.getAppPath());
 			
-			if (appPath != null) {
-				txtFieldAppPath.setText(appPath);
+			if (helper.getAppPath() != null) {
+				txtFieldAppPath.setText(helper.getAppPath());
 				txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
 			}
-			adbPath = prop.getProperty("adbPath");
-			System.out.println(adbPath);
-			if (adbPath != null) {
-				txtFieldAdbPath.setText(adbPath);
+			helper.setAdbPath(prop.getProperty("adbPath"));
+			System.out.println(helper.getAdbPath());
+			if (helper.getAdbPath() != null) {
+				txtFieldAdbPath.setText(helper.getAdbPath());
 				txtFieldAdbPath.setAlignment(Pos.CENTER_RIGHT);
 				this.connectDevices();
 			}
@@ -166,16 +154,16 @@ public class Layout1Controller {
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Applications files", "*.apk"));
 
 		if (file != null) {
-			appPath = file.getPath();
-			txaLog.appendText(appPath + "\n");
-			txtFieldAppPath.setText(appPath);
+			helper.setAppPath(file.getPath());
+			txaLog.appendText(helper.getAppPath() + "\n");
+			txtFieldAppPath.setText(helper.getAppPath());
 			txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
 			
 			OutputStream output = null;
 
 			try {
 				output = new FileOutputStream("file.path");
-				prop.setProperty("appPath", appPath);
+				prop.setProperty("appPath", helper.getAppPath());
 				prop.store(output, null);
 
 			} catch (IOException ioe) {
@@ -195,7 +183,7 @@ public class Layout1Controller {
 
 			}
 		} else {
-			txaLog.appendText("No file selected. \n");
+			txaLog.appendText("No app file selected. \n");
 		}
 
 	}
@@ -212,16 +200,16 @@ public class Layout1Controller {
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("ADB executor", "*adb*.*"));
 		if (file != null) {
-			adbPath = file.getPath();
-			txaLog.appendText(adbPath + "\n");
-			txtFieldAdbPath.setText(adbPath);
+			helper.setAdbPath(file.getPath());
+			txaLog.appendText(helper.getAdbPath() + "\n");
+			txtFieldAdbPath.setText(helper.getAdbPath());
 			txtFieldAdbPath.setAlignment(Pos.CENTER_RIGHT);
 			
 			OutputStream output = null;
 
 			try {
 				output = new FileOutputStream("file.path");
-				prop.setProperty("adbPath", adbPath);
+				prop.setProperty("adbPath", helper.getAdbPath());
 				prop.store(output, null);
 				this.connectDevices();
 
@@ -242,20 +230,37 @@ public class Layout1Controller {
 
 			}
 		} else {
-			txaLog.appendText("No file selected. \n");
+			txaLog.appendText("No adb file selected. \n");
 		}
 
+	}
+	
+	@FXML
+	void selectActivityFile(Event event) {
+		txaLog.appendText("Lack of implementation.. rsrs\n");
 	}
 
 	private void connectDevices() {
 		progressBar.setProgress(0.5);
 		txaLog.appendText("Trying connections...\n");
-		this.adb = AndroidDebugBridge.createBridge(adbPath, true);
+		this.adb = AndroidDebugBridge.createBridge(helper.getAdbPath(), true);
 
 		if (this.adb == null) {
 			System.err.println("Invalid ADB location.");
 			txaLog.appendText("Erro na localizaçao do ADB. \n");
 			return;
+		}
+		this.devices = adb.getDevices();
+		
+		ApkFile apk;
+		try {
+			apk = new ApkFile(helper.getAppPath());
+			helper.setActivityName(helper.extractActivity(apk.getManifestXml()));
+			txaLog.appendText("apk Activity: " + helper.getActivityName() + "\n");
+			helper.setPackageName(helper.extractPackage(apk.getManifestXml()));
+			txaLog.appendText("apk Package: " + helper.getPackageName() + "\n");
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 
 		AndroidDebugBridge.addDeviceChangeListener(new IDeviceChangeListener() {
@@ -325,7 +330,7 @@ public class Layout1Controller {
 		txaLog.appendText("Installing app...\n");
 		try {
 			for (int i = 0; i < devices.length; i++) {
-				devices[i].installPackage(appPath, true, "-r");
+				devices[i].installPackage(helper.getAppPath(), true, "-r");
 				txaLog.appendText("Installed .apk in device " + i + ".\n");
 			}
 		} catch (NullPointerException npe) {
@@ -361,7 +366,7 @@ public class Layout1Controller {
 					} else if (System.getProperty("os.name").equalsIgnoreCase("linux")
 							|| System.getProperty("os.name").indexOf("mac") > 0) {
 						processBuilder.command("bash", "-c", "adb -s " + devices[i].getSerialNumber()
-								+ "  shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
+								+ "  shell am start -n " + helper.getPackageName() + "/" + helper.getActivityName());
 					} else {
 						txaLog.appendText("Aborting command due a not supported OS.");
 						return;
@@ -405,7 +410,7 @@ public class Layout1Controller {
 		txaLog.appendText("Uninstalling app...\n");
 		try {
 			for (int i = 0; i < devices.length; i++) {
-				devices[i].uninstallPackage("com.example.myapplication");
+				devices[i].uninstallPackage(helper.getPackageName());
 				txaLog.appendText("Installed .apk in device " + i + ".\n");
 			}
 		} catch (NullPointerException npe) {
