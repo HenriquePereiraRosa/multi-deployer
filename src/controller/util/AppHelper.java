@@ -53,8 +53,8 @@ public class AppHelper {
 		
 		for (int i = firstIndex; i < seq.length; i++) {
 			if (manifest.substring(i + 1, i + 8).equals(":name=\"")) {
-				firstIndex = i + 8;
-				i += 9;
+				firstIndex = i + ":name=\"".length();
+				i += ":name=\"".length();
 				check = true;
 			}
 			if (check && (manifest.charAt(i) == '"')) {
