@@ -53,13 +53,10 @@ public class Layout1Controller {
 	private URL location;
 
 	@FXML
-	private TextField txtFieldAppPath;
+	private TextField txtFieldAppPath, txtFieldAdbPath;
 
 	@FXML
 	private ProgressBar progressBar;
-
-	@FXML
-	private TextField txtFieldAdbPath;
 
 	@FXML
 	private Button btnInstall, btnClear, btnUninstall, btnLaunch;
@@ -80,12 +77,11 @@ public class Layout1Controller {
 		assert btnLaunch != null : "fx:id=\"btnLaunch\" was not injected: check your FXML file 'Layout1.fxml'.";
 		assert txaLog != null : "fx:id=\"txaLog\" was not injected: check your FXML file 'Layout1.fxml'.";
 		assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'Layout1.fxml'.";
-
 		
 		helper = new AppHelper();
 		
 		txtFieldAppPath.setFocusTraversable(false);
-		txaLog.appendText("Detected OS: " + System.getProperty("os.name") + ".\n"); // TODO: to remove.
+		txaLog.appendText("Detected OS: " + System.getProperty("os.name") + ".\n");
 				
 		try {
 			System.out.println("Initializing the DEBUG bridge.");
@@ -252,12 +248,23 @@ public class Layout1Controller {
 		}
 		this.devices = adb.getDevices();
 		
+		if (this.devices.length > 0) {
+			for (int i = 0; i < devices.length; i++) {
+				cbDevices.getItems().add(devices[i].getName());
+			}
+			cbDevices.setDisable(false);
+			btnInstall.setDisable(false);
+			btnLaunch.setDisable(false);
+			btnUninstall.setDisable(false);
+		}
+		
 		ApkFile apk;
 		try {
 			apk = new ApkFile(helper.getAppPath());
-			helper.setActivityName(helper.extractActivity(apk.getManifestXml()));
+			String manifest = apk.getManifestXml();
+			helper.setActivityName(helper.extractActivity(manifest));
 			txaLog.appendText("apk Activity: " + helper.getActivityName() + "\n");
-			helper.setPackageName(helper.extractPackage(apk.getManifestXml()));
+			helper.setPackageName(helper.extractPackage(manifest));
 			txaLog.appendText("apk Package: " + helper.getPackageName() + "\n");
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -316,6 +323,7 @@ public class Layout1Controller {
 				progressBar.setProgress(0.0);
 				System.out.println(String.format("%s disconnected", device.getSerialNumber()));
 				txaLog.appendText("Disconnected: " + device.toString() + "\n");
+				devices = adb.getDevices();
 				cbDevices.getItems().remove(device.getName());
 				btnLaunch.setDisable(true);
 			}
@@ -353,6 +361,7 @@ public class Layout1Controller {
 	@FXML
 	void launch(ActionEvent event) {
 
+		StringBuffer cmd = new StringBuffer();
 		boolean tryAgain = true;
 
 		try {
@@ -360,13 +369,14 @@ public class Layout1Controller {
 			if (devices != null) {
 				for (int i = 0; i < devices.length; i++) {
 
+					cmd.append("adb -s " + devices[i].getSerialNumber() + " shell am start -n " 
+							+ helper.getPackageName() + "/" + helper.getActivityName());
+
 					if (System.getProperty("os.name").equalsIgnoreCase("windows")) {
-						processBuilder.command("cmd.exe", "/c", "adb -s " + devices[i].getSerialNumber()
-								+ " shell am start -n com.example.myapplication/com.example.myapplication.MapsActivity");
+						processBuilder.command("cmd.exe", "/c", cmd.toString());
 					} else if (System.getProperty("os.name").equalsIgnoreCase("linux")
 							|| System.getProperty("os.name").indexOf("mac") > 0) {
-						processBuilder.command("bash", "-c", "adb -s " + devices[i].getSerialNumber()
-								+ "  shell am start -n " + helper.getPackageName() + "/" + helper.getActivityName());
+						processBuilder.command("bash", "-c", cmd.toString());
 					} else {
 						txaLog.appendText("Aborting command due a not supported OS.");
 						return;
@@ -411,7 +421,7 @@ public class Layout1Controller {
 		try {
 			for (int i = 0; i < devices.length; i++) {
 				devices[i].uninstallPackage(helper.getPackageName());
-				txaLog.appendText("Installed .apk in device " + i + ".\n");
+				txaLog.appendText("Uninstalled .apk in device " + i + ".\n");
 			}
 		} catch (NullPointerException npe) {
 			System.out.println("NullPointerException occured...\n");

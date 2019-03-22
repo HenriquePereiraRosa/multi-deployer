@@ -49,17 +49,17 @@ public class AppHelper {
 		firstIndex = manifest.indexOf("<activity", 0);
 		
 		if (firstIndex == -1)
-			return null;
+			return "ERRO"; // TODO: Throw an Exception
 		
 		for (int i = firstIndex; i < seq.length; i++) {
-			if (manifest.substring(i + 1, i + 8).equals(":name=\"")) {
-				firstIndex = i + ":name=\"".length();
-				i += ":name=\"".length();
-				check = true;
-			}
 			if (check && (manifest.charAt(i) == '"')) {
 				lastIndex = i;
 				break;
+			}
+			if (manifest.substring(i + 1, i + 8).equals(":name=\"") && !check) {
+				firstIndex = i + ":name=\"".length() + 1;
+				i += ":name=\"".length() + 1;
+				check = true;
 			}
 		}			
 		return manifest.substring(firstIndex, lastIndex);
