@@ -35,6 +35,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import net.dongliu.apk.parser.ApkFile;
+import service.ConnectionService;
+import service.InstallationService;
+import service.UninstallationService;
 
 public class Layout1Controller {
 
@@ -66,6 +69,140 @@ public class Layout1Controller {
 
 	@FXML
 	private TextArea txaLog;
+
+	
+	
+	public AndroidDebugBridge getAdb() {
+		return adb;
+	}
+
+	public void setAdb(AndroidDebugBridge adb) {
+		this.adb = adb;
+	}
+
+	public AppHelper getHelper() {
+		return helper;
+	}
+
+	public void setHelper(AppHelper helper) {
+		this.helper = helper;
+	}
+
+	public IDevice[] getDevices() {
+		return devices;
+	}
+
+	public void setDevices(IDevice[] devices) {
+		this.devices = devices;
+	}
+
+	public ProcessBuilder getProcessBuilder() {
+		return processBuilder;
+	}
+
+	public void setProcessBuilder(ProcessBuilder processBuilder) {
+		this.processBuilder = processBuilder;
+	}
+
+	public Properties getProp() {
+		return prop;
+	}
+
+	public void setProp(Properties prop) {
+		this.prop = prop;
+	}
+
+	public ResourceBundle getResources() {
+		return resources;
+	}
+
+	public void setResources(ResourceBundle resources) {
+		this.resources = resources;
+	}
+
+	public URL getLocation() {
+		return location;
+	}
+
+	public void setLocation(URL location) {
+		this.location = location;
+	}
+
+	public TextField getTxtFieldAppPath() {
+		return txtFieldAppPath;
+	}
+
+	public void setTxtFieldAppPath(TextField txtFieldAppPath) {
+		this.txtFieldAppPath = txtFieldAppPath;
+	}
+
+	public TextField getTxtFieldAdbPath() {
+		return txtFieldAdbPath;
+	}
+
+	public void setTxtFieldAdbPath(TextField txtFieldAdbPath) {
+		this.txtFieldAdbPath = txtFieldAdbPath;
+	}
+
+	public ProgressBar getProgressBar() {
+		return progressBar;
+	}
+
+	public void setProgressBar(ProgressBar progressBar) {
+		this.progressBar = progressBar;
+	}
+
+	public Button getBtnInstall() {
+		return btnInstall;
+	}
+
+	public void setBtnInstall(Button btnInstall) {
+		this.btnInstall = btnInstall;
+	}
+
+	public Button getBtnClear() {
+		return btnClear;
+	}
+
+	public void setBtnClear(Button btnClear) {
+		this.btnClear = btnClear;
+	}
+
+	public Button getBtnUninstall() {
+		return btnUninstall;
+	}
+
+	public void setBtnUninstall(Button btnUninstall) {
+		this.btnUninstall = btnUninstall;
+	}
+
+	public Button getBtnLaunch() {
+		return btnLaunch;
+	}
+
+	public void setBtnLaunch(Button btnLaunch) {
+		this.btnLaunch = btnLaunch;
+	}
+
+	public ComboBox<String> getCbDevices() {
+		return cbDevices;
+	}
+
+	public void setCbDevices(ComboBox<String> cbDevices) {
+		this.cbDevices = cbDevices;
+	}
+
+	public TextArea getTxaLog() {
+		return txaLog;
+	}
+
+	public void setTxaLog(TextArea txaLog) {
+		this.txaLog = txaLog;
+	}
+
+	public FileChooser getFileChooser() {
+		return fileChooser;
+	}
 
 	@FXML
 	void initialize() {
@@ -131,7 +268,6 @@ public class Layout1Controller {
 		try {
 			System.out.println("Closing the DEBUG bridge.");
 			AndroidDebugBridge.terminate();
-			System.exit(0); // TODO: check this addition
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -237,26 +373,10 @@ public class Layout1Controller {
 	}
 
 	private void connectDevices() {
-		progressBar.setProgress(0.5);
-		txaLog.appendText("Trying connections...\n");
-		this.adb = AndroidDebugBridge.createBridge(helper.getAdbPath(), true);
-
-		if (this.adb == null) {
-			System.err.println("Invalid ADB location.");
-			txaLog.appendText("Erro na localizaçao do ADB. \n");
-			return;
-		}
-		this.devices = adb.getDevices();
 		
-		if (this.devices.length > 0) {
-			for (int i = 0; i < devices.length; i++) {
-				cbDevices.getItems().add(devices[i].getName());
-			}
-			cbDevices.setDisable(false);
-			btnInstall.setDisable(false);
-			btnLaunch.setDisable(false);
-			btnUninstall.setDisable(false);
-		}
+		ConnectionService service = new ConnectionService(this);
+		Thread thread =  new Thread(service);
+		thread.start();
 		
 		ApkFile apk;
 		try {
@@ -283,10 +403,8 @@ public class Layout1Controller {
 					if (!cbDevices.getItems().contains(device.getName())) {
 						cbDevices.getItems().add(device.getName());
 					}
-					cbDevices.setDisable(false);
-					btnInstall.setDisable(false);
-					btnLaunch.setDisable(false);
-					btnUninstall.setDisable(false);
+					enableButton();
+
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} catch (ExecutionException e) {
@@ -302,10 +420,7 @@ public class Layout1Controller {
 				if (!cbDevices.getItems().contains(device.getName())) {
 					cbDevices.getItems().add(device.getName());
 				}
-				cbDevices.setDisable(false);
-				btnInstall.setDisable(false);
-				btnLaunch.setDisable(false);
-				btnUninstall.setDisable(false);
+				enableButton();
 				
 				try {
 					txaLog.appendText("Connected: " + device.getName() + " - Battery: "
@@ -327,35 +442,15 @@ public class Layout1Controller {
 				cbDevices.getItems().remove(device.getName());
 				btnLaunch.setDisable(true);
 			}
-
 		});
-
 	}
 
 	@FXML
 	void install(ActionEvent event) {
-
-		txaLog.appendText("Installing app...\n");
-		try {
-			for (int i = 0; i < devices.length; i++) {
-				devices[i].installPackage(helper.getAppPath(), true, "-r");
-				txaLog.appendText("Installed .apk in device " + i + ".\n");
-			}
-		} catch (NullPointerException npe) {
-			System.out.println("NullPointerException occured...\n");
-			txaLog.appendText("NullPointerException occured...\n");
-			npe.printStackTrace();
-			System.out.println(npe.getCause());
-		} catch (InstallException ie) {
-			System.out.println("ERROR: Not installed due an OLDER SDK.\n");
-			txaLog.appendText("ERROR: Not installed due an OLDER SDK.\n");
-			ie.printStackTrace();
-			System.out.println(ie.getCause());
-		} catch (Exception e) {
-			System.out.println("Exception occured...\n");
-			txaLog.appendText("Exception occured..\n");
-			e.printStackTrace();
-		}
+		
+		InstallationService service = new InstallationService(this);
+		Thread thread =  new Thread(service);
+		thread.start();
 	}
 
 	@FXML
@@ -416,33 +511,22 @@ public class Layout1Controller {
 
 	@FXML
 	void uninstall(ActionEvent event) {
-
-		txaLog.appendText("Uninstalling app...\n");
-		try {
-			for (int i = 0; i < devices.length; i++) {
-				devices[i].uninstallPackage(helper.getPackageName());
-				txaLog.appendText("Uninstalled .apk in device " + i + ".\n");
-			}
-		} catch (NullPointerException npe) {
-			System.out.println("NullPointerException occured...\n");
-			txaLog.appendText("NullPointerException occured...\n");
-			npe.printStackTrace();
-			System.out.println(npe.getCause());
-		} catch (InstallException ie) {
-			System.out.println("ERROR: Not installed due an OLDER SDK.\n");
-			txaLog.appendText("ERROR: Not installed due an OLDER SDK.\n");
-			ie.printStackTrace();
-			System.out.println(ie.getCause());
-		} catch (Exception e) {
-			System.out.println("Exception occured...\n");
-			txaLog.appendText("Exception occured..\n");
-			e.printStackTrace();
-		}
+		
+		UninstallationService service = new UninstallationService(this);
+		Thread thread =  new Thread(service);
+		thread.start();
 	}
 
 	@FXML
 	void ClearHistory(ActionEvent event) {
 		txaLog.clear();
+	}
+	
+	private void enableButton() {
+		cbDevices.setDisable(false);
+		btnInstall.setDisable(false);
+		btnLaunch.setDisable(false);
+		btnUninstall.setDisable(false);		
 	}
 
 }
