@@ -19,7 +19,7 @@ public class MultiDeployer extends Application{
 		
 		primaryStage.setOnCloseRequest(event -> {
 			Layout1Controller layout1Ctrl = new Layout1Controller();
-			layout1Ctrl.closeWindowEvent();
+			layout1Ctrl.closeWindowEvent(event);
 		});;
 	}
 

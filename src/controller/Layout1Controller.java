@@ -17,6 +17,7 @@ import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.InstallException;
+import com.android.ddmlib.NullOutputReceiver;
 
 import controller.util.AppHelper;
 import javafx.event.ActionEvent;
@@ -27,6 +28,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -37,6 +39,7 @@ import javafx.stage.Stage;
 import net.dongliu.apk.parser.ApkFile;
 import service.ConnectionService;
 import service.InstallationService;
+import service.LaunchService;
 import service.UninstallationService;
 
 public class Layout1Controller {
@@ -46,7 +49,6 @@ public class Layout1Controller {
 	private AppHelper helper;
 
 	private IDevice devices[];
-	private ProcessBuilder processBuilder = new ProcessBuilder();
 	private Properties prop;
 
 	@FXML
@@ -54,7 +56,10 @@ public class Layout1Controller {
 
 	@FXML
 	private URL location;
-
+	
+	@FXML
+    private Label lblOS;
+	
 	@FXML
 	private TextField txtFieldAppPath, txtFieldAdbPath;
 
@@ -96,14 +101,6 @@ public class Layout1Controller {
 		this.devices = devices;
 	}
 
-	public ProcessBuilder getProcessBuilder() {
-		return processBuilder;
-	}
-
-	public void setProcessBuilder(ProcessBuilder processBuilder) {
-		this.processBuilder = processBuilder;
-	}
-
 	public Properties getProp() {
 		return prop;
 	}
@@ -126,6 +123,14 @@ public class Layout1Controller {
 
 	public void setLocation(URL location) {
 		this.location = location;
+	}
+		
+	public Label getLblOS() {
+		return lblOS;
+	}
+
+	public void setLblOS(Label lblOS) {
+		this.lblOS = lblOS;
 	}
 
 	public TextField getTxtFieldAppPath() {
@@ -218,7 +223,7 @@ public class Layout1Controller {
 		helper = new AppHelper();
 		
 		txtFieldAppPath.setFocusTraversable(false);
-		txaLog.appendText("Detected OS: " + System.getProperty("os.name") + ".\n");
+		lblOS.setText(System.getProperty("os.name"));
 				
 		try {
 			System.out.println("Initializing the DEBUG bridge.");
@@ -264,10 +269,12 @@ public class Layout1Controller {
 
 	}
 
-	public void closeWindowEvent() {
+	@FXML
+	public void closeWindowEvent(Event event) {
 		try {
 			System.out.println("Closing the DEBUG bridge.");
 			AndroidDebugBridge.terminate();
+			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -394,53 +401,17 @@ public class Layout1Controller {
 
 			@Override
 			public void deviceChanged(IDevice device, int arg1) {
-				System.out.println(String.format("%s changed", device.getSerialNumber()));
-				try {
-					txaLog.appendText("Changed: " + device.getName() + " BAT LEVEL: "
-							+ device.getBattery().get().toString() + "%\n");
-
-					devices = adb.getDevices();
-					if (!cbDevices.getItems().contains(device.getName())) {
-						cbDevices.getItems().add(device.getName());
-					}
-					enableButton();
-
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
-				}
+				addDevices(device);
 			}
 
 			@Override
 			public void deviceConnected(IDevice device) {
-				progressBar.setProgress(1.0);
-				System.out.println(String.format("%s connected", device.getSerialNumber()));
-
-				if (!cbDevices.getItems().contains(device.getName())) {
-					cbDevices.getItems().add(device.getName());
-				}
-				enableButton();
-				
-				try {
-					txaLog.appendText("Connected: " + device.getName() + " - Battery: "
-							+ device.getBattery().get().toString() + "%\n");
-					devices = adb.getDevices();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
-				}
+				addDevices(device);
 			}
 
 			@Override
 			public void deviceDisconnected(IDevice device) {
-				progressBar.setProgress(0.0);
-				System.out.println(String.format("%s disconnected", device.getSerialNumber()));
-				txaLog.appendText("Disconnected: " + device.toString() + "\n");
-				devices = adb.getDevices();
-				cbDevices.getItems().remove(device.getName());
-				btnLaunch.setDisable(true);
+				removeDevices(device);
 			}
 		});
 	}
@@ -455,58 +426,10 @@ public class Layout1Controller {
 
 	@FXML
 	void launch(ActionEvent event) {
-
-		StringBuffer cmd = new StringBuffer();
-		boolean tryAgain = true;
-
-		try {
-
-			if (devices != null) {
-				for (int i = 0; i < devices.length; i++) {
-
-					cmd.append("adb -s " + devices[i].getSerialNumber() + " shell am start -n " 
-							+ helper.getPackageName() + "/" + helper.getActivityName());
-
-					if (System.getProperty("os.name").equalsIgnoreCase("windows")) {
-						processBuilder.command("cmd.exe", "/c", cmd.toString());
-					} else if (System.getProperty("os.name").equalsIgnoreCase("linux")
-							|| System.getProperty("os.name").indexOf("mac") > 0) {
-						processBuilder.command("bash", "-c", cmd.toString());
-					} else {
-						txaLog.appendText("Aborting command due a not supported OS.");
-						return;
-					}
-
-					Process process = processBuilder.start();
-					txaLog.appendText("Command sent to Device " + i + " \n");
-
-					StringBuilder output = new StringBuilder();
-					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-					String line;
-					while ((line = reader.readLine()) != null) {
-						txaLog.appendText("reader.readLine(): " + line + "\n");
-						output.append(line + "\n");
-					}
-					if ((i == (devices.length - 1)) && tryAgain) {
-						i = 0;
-						tryAgain = false;
-					}
-				}
-			} else {
-				txaLog.appendText("No device is connected.");
-			}
-		} catch (IOException e) {
-			txaLog.appendText("IOException occured..\n");
-			e.printStackTrace();
-		} catch (NullPointerException npe) {
-			npe.printStackTrace();
-			System.out.println(npe.getCause());
-		} catch (Exception e) {
-			System.out.println("Exception occured...\n");
-			txaLog.appendText("Exception occured..\n");
-			e.printStackTrace();
-		}
+		
+		LaunchService service = new LaunchService(this);
+		Thread thread =  new Thread(service);
+		thread.start();
 	}
 
 	@FXML
@@ -522,7 +445,49 @@ public class Layout1Controller {
 		txaLog.clear();
 	}
 	
-	private void enableButton() {
+	private void addDevices(IDevice device) {
+		progressBar.setProgress(1.0);
+		System.out.println(String.format("%s connected", device.getSerialNumber()));
+
+		if (!cbDevices.getItems().contains(device.getName())) {
+			String name = device.getName();
+			cbDevices.getItems().add(name);
+		}
+		if (!cbDevices.getItems().contains(device.getSerialNumber())) {
+			cbDevices.getItems().removeAll(device.getSerialNumber());
+		}
+		enableButtons();
+		
+		try {
+			txaLog.appendText("Connected: " + device.getName() + " - Battery: "
+					+ device.getBattery().get().toString() + "%\n");
+			devices = adb.getDevices();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void removeDevices(IDevice device) {
+		progressBar.setProgress(0.0);
+		System.out.println(String.format("%s disconnected", device.getSerialNumber()));
+		txaLog.appendText("Disconnected: " + device.toString() + "\n");
+		devices = adb.getDevices();
+		while (cbDevices.getItems().contains(device.getName())) {
+			cbDevices.getItems().remove(device.getName());
+			cbDevices.getItems().remove(device.getSerialNumber());
+		}
+		cbDevices.getItems().remove(device.getName());
+		cbDevices.getItems().remove(device.getSerialNumber());
+		if(devices.length < 1) {
+			btnLaunch.setDisable(true);
+		}
+		
+	}
+	
+	public void enableButtons() {
 		cbDevices.setDisable(false);
 		btnInstall.setDisable(false);
 		btnLaunch.setDisable(false);

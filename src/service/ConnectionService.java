@@ -30,6 +30,14 @@ public class ConnectionService implements Runnable {
 			controller.getTxaLog().appendText("Erro na localizaçao do ADB. \n");
 			return;
 		}
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			System.out.println("Thread Sleep Exception");
+			e.printStackTrace();
+		}
+		
 		controller.setDevices(controller.getAdb().getDevices());
 		
 		
@@ -37,10 +45,9 @@ public class ConnectionService implements Runnable {
 			for (int i = 0; i < controller.getDevices().length; i++) {
 				controller.getCbDevices().getItems().add(controller.getDevices()[i].getName());
 			}
-			controller.getCbDevices().setDisable(false);
-			controller.getBtnInstall().setDisable(false);
-			controller.getBtnLaunch().setDisable(false);
-			controller.getBtnUninstall().setDisable(false);
+			controller.getTxaLog().appendText("Devices connected. \n");
+			controller.getProgressBar().setProgress(1.0);
+			controller.enableButtons();
 		}
 	}
 
