@@ -6,7 +6,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class MultiDeployer extends Application{
-
+	
+	public static void main(String[] args) throws ClassNotFoundException
+    {
+        Application.launch(MultiDeployer.class, args);
+    }
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
@@ -22,5 +27,4 @@ public class MultiDeployer extends Application{
 			layout1Ctrl.closeWindowEvent(event);
 		});;
 	}
-
 }

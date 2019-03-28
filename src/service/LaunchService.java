@@ -25,8 +25,6 @@ public class LaunchService implements Runnable {
 	@Override
 	public void run() {
 		controller.getBtnLaunch().setDisable(true);
-		ProcessBuilder processBuilder = new ProcessBuilder();
-		StringBuffer cmd = new StringBuffer();
 		IDevice devices[] = controller.getAdb().getDevices();
 		try {
 
