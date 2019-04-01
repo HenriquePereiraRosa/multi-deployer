@@ -35,7 +35,7 @@ public class InstallationService implements Runnable {
 			System.out.println(npe.getCause());
 		} catch (InstallException ie) {
 			System.out.println("ERROR: Not installed due an OLDER SDK.\n");
-			controller.getTxaLog().appendText("ERROR: Not installed due an OLDER SDK.\n");
+			controller.getTxaLog().appendText("ERROR: Not installed due an older SDK or wrong apk path.\n");
 			ie.printStackTrace();
 			System.out.println(ie.getCause());
 		} catch (Exception e) {

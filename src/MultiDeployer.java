@@ -19,14 +19,17 @@ public class MultiDeployer extends Application {
 		Scene scene = new Scene(root);
 
 		primaryStage.setScene(scene);
-		primaryStage.show();
+		primaryStage.setTitle("INSPER - Apk Multi Devices Deployer");
+		
 		try {
 			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/logo.png")));
-			primaryStage.setTitle("INSPER - Apk Multi Devices Deployer");
 			} catch (NullPointerException e) {
 			System.out.println("logo.png not found.");
 			e.printStackTrace();
 		}
+
+		primaryStage.show();
+		
 		primaryStage.setOnCloseRequest(event -> {
 			Layout1Controller layout1Ctrl = new Layout1Controller();
 			layout1Ctrl.closeWindowEvent(event);
