@@ -51,6 +51,7 @@ public class ConnectionService implements Runnable {
 				controller.enableButtons();
 			}
 		} catch (Exception e) {
+			controller.getProgressBar().setProgress(0);
 			controller.getTxaLog().clear();
 			controller.getTxaLog().appendText("Error: Verify the ADB file path:\n");
 			controller.getTxaLog().appendText("- Linux hint: /home/user/Android/Sdk/platform-tools/adb\n");
