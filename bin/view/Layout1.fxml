@@ -65,7 +65,7 @@
       </MenuBar>
       <ImageView fitHeight="71.0" fitWidth="585.0" layoutX="372.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Users/henriquepr/Downloads/insper-positivo/Insper-positivo.png" />
+            <Image url="@../resources/img/Insper-positivo.png" />
          </image>
       </ImageView>
    </children>
