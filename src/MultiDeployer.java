@@ -19,7 +19,7 @@ public class MultiDeployer extends Application {
 		Scene scene = new Scene(root);
 
 		primaryStage.setScene(scene);
-		primaryStage.setTitle("INSPER - Apk Multi Devices Deployer");
+		primaryStage.setTitle("INSPER - Multi Devices Deployer");
 		
 		try {
 			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/logo.png")));

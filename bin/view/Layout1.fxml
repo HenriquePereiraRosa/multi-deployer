@@ -9,13 +9,15 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="542.0" prefWidth="1117.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Layout1Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="947.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Layout1Controller">
    <children>
-      <Text layoutX="221.0" layoutY="99.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Powered by Insper / Henrique P. Rosa / Hashimoto" />
+      <Text layoutX="583.0" layoutY="558.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Powered by Insper / Henrique P. Rosa / Hashimoto" />
       <Label fx:id="lblOS" layoutX="56.0" layoutY="150.0" prefHeight="26.0" prefWidth="216.0">
          <font>
             <Font size="22.0" />
@@ -35,12 +37,12 @@
          <font>
             <Font name="System Bold" size="17.0" />
          </font></Button>
-      <TextArea fx:id="txaLog" editable="false" focusTraversable="false" layoutX="295.0" layoutY="134.0" prefHeight="364.0" prefWidth="813.0" promptText="Log History" />
+      <TextArea fx:id="txaLog" editable="false" focusTraversable="false" layoutX="295.0" layoutY="134.0" prefHeight="364.0" prefWidth="643.0" promptText="Log History" />
       <Button fx:id="btnUninstall" disable="true" layoutX="10.0" layoutY="502.0" mnemonicParsing="false" onAction="#uninstall" prefHeight="26.0" prefWidth="265.0" text="UnIinstall app" textAlignment="CENTER" textFill="#dd0606">
          <font>
             <Font name="System Bold" size="11.0" />
          </font></Button>
-      <Button fx:id="btnClear" layoutX="295.0" layoutY="499.0" mnemonicParsing="false" onAction="#ClearHistory" prefHeight="29.0" prefWidth="813.0" text="Clear" />
+      <Button fx:id="btnClear" layoutX="295.0" layoutY="499.0" mnemonicParsing="false" onAction="#ClearHistory" prefHeight="30.0" prefWidth="643.0" text="Clear" />
       <MenuBar layoutX="-5.0" prefHeight="29.0" prefWidth="1123.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
@@ -61,5 +63,10 @@
           </Menu>
         </menus>
       </MenuBar>
+      <ImageView fitHeight="71.0" fitWidth="585.0" layoutX="372.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../Users/henriquepr/Downloads/insper-positivo/Insper-positivo.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

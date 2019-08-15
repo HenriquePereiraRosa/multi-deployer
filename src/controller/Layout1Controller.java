@@ -218,8 +218,7 @@ public class Layout1Controller {
 		
 		helper = new AppHelper();
 		
-		txtFieldAppPath.setFocusTraversable(false);
-		lblOS.setText(System.getProperty("os.name"));
+		this.initLayout();
 				
 		try {
 			System.out.println("Initializing the DEBUG bridge.");
@@ -463,6 +462,20 @@ public class Layout1Controller {
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
+		
+	}
+	
+	private void initLayout() {		
+
+		txtFieldAppPath.setFocusTraversable(false);
+		lblOS.setText(System.getProperty("os.name"));
+		
+		txaLog.appendText("Example of .apk path:\n");
+		txaLog.appendText("C:\\..\\MyApp\\app\\build\\outputs\\apk\\debug\\app-debug.apk\n");
+		txaLog.appendText("\n");
+		txaLog.appendText("Example of AVD path:\n");
+		txaLog.appendText("C:\\Users\\user\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe\n");
+		txaLog.appendText("\n");
 		
 	}
 	
