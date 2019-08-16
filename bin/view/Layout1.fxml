@@ -18,7 +18,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="947.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Layout1Controller">
    <children>
       <Text layoutX="583.0" layoutY="558.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Powered by Insper / Henrique P. Rosa / Hashimoto" />
-      <Label fx:id="lblOS" layoutX="56.0" layoutY="150.0" prefHeight="26.0" prefWidth="216.0">
+      <Label fx:id="lblOS" layoutX="49.0" layoutY="148.0" prefHeight="26.0" prefWidth="216.0">
          <font>
             <Font size="22.0" />
          </font>
@@ -43,7 +43,7 @@
             <Font name="System Bold" size="11.0" />
          </font></Button>
       <Button fx:id="btnClear" layoutX="295.0" layoutY="499.0" mnemonicParsing="false" onAction="#ClearHistory" prefHeight="30.0" prefWidth="643.0" text="Clear" />
-      <MenuBar layoutX="-5.0" prefHeight="29.0" prefWidth="1123.0">
+      <MenuBar layoutX="-5.0" prefHeight="30.0" prefWidth="947.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>

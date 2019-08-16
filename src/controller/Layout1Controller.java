@@ -39,6 +39,8 @@ import service.LaunchService;
 import service.UninstallationService;
 
 public class Layout1Controller {
+	
+	private final int MIN_DEVICES = 1;
 
 	final FileChooser fileChooser = new FileChooser();
 	private AndroidDebugBridge adb;
@@ -465,18 +467,14 @@ public class Layout1Controller {
 		
 	}
 	
-	private void initLayout() {		
+	private void initLayout() {
+		StringBuilder os = new StringBuilder();
 
-		txtFieldAppPath.setFocusTraversable(false);
-		lblOS.setText(System.getProperty("os.name"));
+		txtFieldAppPath.setFocusTraversable(false);		
+		os.append(System.getProperty("os.name"));
+		lblOS.setText(os.toString());
 		
-		txaLog.appendText("Example of .apk path:\n");
-		txaLog.appendText("C:\\..\\MyApp\\app\\build\\outputs\\apk\\debug\\app-debug.apk\n");
-		txaLog.appendText("\n");
-		txaLog.appendText("Example of AVD path:\n");
-		txaLog.appendText("C:\\Users\\user\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe\n");
-		txaLog.appendText("\n");
-		
+		this.showPathHints(os.toString().toLowerCase());		
 	}
 	
 	private void removeDevices(IDevice device) {
@@ -490,10 +488,9 @@ public class Layout1Controller {
 		}
 		cbDevices.getItems().remove(device.getName());
 		cbDevices.getItems().remove(device.getSerialNumber());
-		if(devices.length < 1) {
+		if(devices.length < MIN_DEVICES) {
 			btnLaunch.setDisable(true);
 		}
-		
 	}
 	
 	public void enableButtons() {
@@ -501,6 +498,31 @@ public class Layout1Controller {
 		btnInstall.setDisable(false);
 		btnLaunch.setDisable(false);
 		btnUninstall.setDisable(false);		
+	}
+
+	private void showPathHints(String os) {
+
+		if(os.contains("windows")) {
+			txaLog.appendText("# Windows Detected\n\n");
+			txaLog.appendText("- Example of .apk path:\n");
+			txaLog.appendText("C:\\..\\MyApp\\app\\build\\outputs\\apk\\debug\\app-debug.apk\n\n");
+			txaLog.appendText("- Example of AVD path:\n");
+			txaLog.appendText("C:\\Users\\user\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe\n\n");
+
+		} else if(os.contains("linux")) {
+			txaLog.appendText("# Linux Detected\n\n");
+			txaLog.appendText("- Example of .apk path:\n");
+			txaLog.appendText("GET THE PATH FOR LINUX\n\n");
+			txaLog.appendText("- Example of AVD path:\n");
+			txaLog.appendText("GET THE PATH FOR LINUX\n\n");
+
+		} else if(os.contains("mac")) {
+			txaLog.appendText("# Mac OS Detected\n\n");
+			txaLog.appendText("- Example of .apk path:\n");
+			txaLog.appendText("/Users/agile/Downloads/apk/app-debug.apk\n\n");
+			txaLog.appendText("- Example of AVD path:\n");
+			txaLog.appendText("/Users/agile/Library/Android/sdk/platform-tools/adb\n\n");
+		}
 	}
 
 }
