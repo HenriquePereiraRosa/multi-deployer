@@ -255,12 +255,12 @@ public class Layout1Controller {
         assert miGitCode != null : "fx:id=\"miGitCode\" was not injected: check your FXML file 'Layout1.fxml'.";
         
 		this.initLayout();
-				
+		
 		try {
 			System.out.println("Initializing the DEBUG bridge.");
 			AndroidDebugBridge.init(false);
 		} catch (Exception e) {
-			txaLog.appendText("Exception in init()");
+			txaLog.appendText("Exception in init()\n");
 			e.printStackTrace();
 		}
 
@@ -413,9 +413,11 @@ public class Layout1Controller {
 
 	private void connectDevices() {
 		
-		ConnectionService service = new ConnectionService(this);
-		Thread thread =  new Thread(service);
-		thread.start();
+		if(this.getAdb() == null) {
+			ConnectionService service = new ConnectionService(this);
+			Thread thread =  new Thread(service);
+			thread.start();
+		}
 		
 		ApkFile apk;
 		try {
@@ -476,29 +478,6 @@ public class Layout1Controller {
 	void ClearHistory(ActionEvent event) {
 		txaLog.clear();
 	}
-	
-	private void addDevices(IDevice device) {
-		progressBar.setProgress(1.0);
-		System.out.println(String.format("%s connected", device.getSerialNumber()));
-
-		if (!cbDevices.getItems().contains(device.getName())) {
-			String name = device.getName();
-			cbDevices.getItems().add(name);
-		}
-		if (!cbDevices.getItems().contains(device.getSerialNumber())) {
-			cbDevices.getItems().removeAll(device.getSerialNumber());
-		}
-		enableButtons();
-		
-		try {
-			txaLog.appendText("Connected: " + device.getName() + " - Battery: "
-					+ device.getBattery().get().toString() + "%\n");
-			devices = adb.getDevices();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		
-	}
 
     @FXML
     void showAboutUs(ActionEvent event) {
@@ -536,8 +515,36 @@ public class Layout1Controller {
 		
 		this.showPathHints(os.toString().toLowerCase());		
 	}
+
+	
+	private void addDevices(IDevice device) {
+		
+		this.setAdb(AndroidDebugBridge.getBridge());
+		progressBar.setProgress(1.0);
+		System.out.println(String.format("%s connected", device.getSerialNumber()));
+
+		if (!cbDevices.getItems().contains(device.getName())) {
+			String name = device.getName();
+			cbDevices.getItems().add(name);
+		}
+		if (!cbDevices.getItems().contains(device.getSerialNumber())) {
+			cbDevices.getItems().removeAll(device.getSerialNumber());
+		}
+		enableButtons();
+		
+		try {
+			txaLog.appendText("Connected: " + device.getName() + " - Battery: "
+					+ device.getBattery().get().toString() + "%\n");
+			devices = adb.getDevices();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		
+	} 
 	
 	private void removeDevices(IDevice device) {
+
+		this.setAdb(AndroidDebugBridge.getBridge());
 		progressBar.setProgress(0.0);
 		System.out.println(String.format("%s disconnected", device.getSerialNumber()));
 		txaLog.appendText("Disconnected: " + device.toString() + "\n");
