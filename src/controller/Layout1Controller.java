@@ -16,6 +16,8 @@ import com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener;
 import com.android.ddmlib.IDevice;
 
 import controller.util.AppHelper;
+import event.Trigger;
+import event.TriggerHandler;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -25,26 +27,32 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import multideployer.MultiDeployer;
 import net.dongliu.apk.parser.ApkFile;
 import service.ConnectionService;
 import service.InstallationService;
 import service.LaunchService;
 import service.UninstallationService;
 
+
 public class Layout1Controller {
 	
 	private final int MIN_DEVICES = 1;
-
-	final FileChooser fileChooser = new FileChooser();
+	
+	private FileChooser fileChooser;
 	private AndroidDebugBridge adb;
 	private AppHelper helper;
+	private Trigger trigger;
+	private TriggerHandler triggerHandler;
 
 	private IDevice devices[];
 	private Properties prop;
@@ -65,16 +73,27 @@ public class Layout1Controller {
 	private ProgressBar progressBar;
 
 	@FXML
-	private Button btnInstall, btnClear, btnUninstall, btnLaunch;
+	private Button btnInstall, btnClear, btnUninstall, btnLaunch,
+					btnAppFile, btnAdbFile;
 
 	@FXML
-	private ComboBox<String> cbDevices = new ComboBox<String>();
+	private ComboBox<String> cbDevices;
 
 	@FXML
-	private TextArea txaLog;
+	private TextArea txaLog;	
 
-	
-	
+    @FXML
+    private MenuItem miClose;
+
+    @FXML
+    private MenuItem miClearLogs, miAboutUs, miGitCode;
+
+    @FXML
+    private MenuItem miBugReport;
+
+	private AnchorPane pane;
+
+		
 	public AndroidDebugBridge getAdb() {
 		return adb;
 	}
@@ -206,20 +225,35 @@ public class Layout1Controller {
 	public FileChooser getFileChooser() {
 		return fileChooser;
 	}
+	
+	public void setPane(AnchorPane pane) {
+		this.pane = pane;		
+	}
+	
+	public AnchorPane getPane() {
+		return this.pane;
+	}
 
 	@FXML
 	void initialize() {
-		assert txtFieldAppPath != null : "fx:id=\"txtFieldFileAddress\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert progressBar != null : "fx:id=\"progressBar\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert txtFieldAdbPath != null : "fx:id=\"txtFieldADBPath\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert cbDevices != null : "fx:id=\"cbxDevices\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnInstall != null : "fx:id=\"btnInstall\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnLaunch != null : "fx:id=\"btnLaunch\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert txaLog != null : "fx:id=\"txaLog\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'Layout1.fxml'.";
-		
-		helper = new AppHelper();
-		
+        assert lblOS != null : "fx:id=\"lblOS\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert txtFieldAppPath != null : "fx:id=\"txtFieldAppPath\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert btnAppFile != null : "fx:id=\"btnAppFile\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert progressBar != null : "fx:id=\"progressBar\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert txtFieldAdbPath != null : "fx:id=\"txtFieldAdbPath\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert btnAdbFile != null : "fx:id=\"btnAdbFile\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert cbDevices != null : "fx:id=\"cbDevices\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert btnInstall != null : "fx:id=\"btnInstall\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert btnLaunch != null : "fx:id=\"btnLaunch\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert txaLog != null : "fx:id=\"txaLog\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert btnUninstall != null : "fx:id=\"btnUninstall\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert miClose != null : "fx:id=\"miClose\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert miClearLogs != null : "fx:id=\"miClearLogs\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert miAboutUs != null : "fx:id=\"miAboutUs\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert miBugReport != null : "fx:id=\"miBugReport\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert miGitCode != null : "fx:id=\"miGitCode\" was not injected: check your FXML file 'Layout1.fxml'.";
+        
 		this.initLayout();
 				
 		try {
@@ -335,6 +369,7 @@ public class Layout1Controller {
 		File file = fileChooser.showOpenDialog(stage);
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("ADB executor", "*adb*.*"));
+		
 		if (file != null) {
 			helper.setAdbPath(file.getPath());
 			txaLog.appendText(helper.getAdbPath() + "\n");
@@ -459,15 +494,40 @@ public class Layout1Controller {
 			txaLog.appendText("Connected: " + device.getName() + " - Battery: "
 					+ device.getBattery().get().toString() + "%\n");
 			devices = adb.getDevices();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
+		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
 		
 	}
+
+    @FXML
+    void showAboutUs(ActionEvent event) {
+    	MultiDeployer.changeScene(MultiDeployer.LAYOUT2);
+    }
+
+    @FXML
+    void showBugReport(ActionEvent event) {
+    	MultiDeployer.changeScene(MultiDeployer.LAYOUT3);
+    	
+    }
+
+    @FXML
+    void openGit(ActionEvent event) {
+    	trigger.addListener(triggerHandler);
+    	trigger.triggerEvent("https://github.com/HenriquePereiraRosa/multi-deployer");
+	}
+    
+    
+    
+    // =========== 			Helpers       ====================
 	
 	private void initLayout() {
+
+		helper = new AppHelper();
+		fileChooser = new FileChooser();
+		cbDevices = new ComboBox<String>();
+		trigger = new Trigger();
+		triggerHandler = new TriggerHandler();
 		StringBuilder os = new StringBuilder();
 
 		txtFieldAppPath.setFocusTraversable(false);		

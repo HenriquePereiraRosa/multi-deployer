@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="947.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Layout2Controller">
+   <children>
+      <ImageView fitHeight="71.0" fitWidth="585.0" layoutX="355.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../resources/img/Insper-positivo.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="247.0" layoutY="196.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Projeto idealizado em abr/2019">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+      <Text layoutX="194.0" layoutY="321.0" strokeType="OUTSIDE" strokeWidth="0.0" text="e executado por Henrique Pereira Rosa.">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+      <Button fx:id="btnClose" layoutX="14.0" layoutY="45.0" mnemonicParsing="false" onAction="#goToScreen1" prefHeight="40.0" prefWidth="44.0">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <SVGPath content="M22.37931656590642,6.001970773323794 L12.403162138100328,14.749057418687869 L22.37931656590642,23.49614406404044 L16.677735499681617,28.496700951808013 L1.0000000056513443,14.749057418687869 L16.677735499681617,1.0000001007381911 " />
+         </graphic></Button>
+      <Text layoutX="583.0" layoutY="558.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Powered by Insper / Henrique P. Rosa / Hashimoto" />
+      <Text layoutX="295.0" layoutY="381.0" strokeType="OUTSIDE" strokeWidth="0.0" text="para suporte à disciplina">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+      <Text layoutX="235.0" layoutY="257.0" strokeType="OUTSIDE" strokeWidth="0.0" text="pelo Prof. Dr. Marcelo Hashimoto">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+      <Text layoutX="222.0" layoutY="445.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Desenvolvimento Colaborativo Ágil">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

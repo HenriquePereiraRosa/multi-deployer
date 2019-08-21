@@ -34,8 +34,10 @@ public class LaunchService implements Runnable {
 									+ controller.getHelper().getPackageName() + "/"
 									+ controller.getHelper().getActivityName(), new NullOutputReceiver());
 				}
+
+				controller.getTxaLog().appendText("Command(s) sent.\n");
 			} else {
-				controller.getTxaLog().appendText("No device is connected.");
+				controller.getTxaLog().appendText("No device is connected.\n");
 			}
 		} catch (IOException e) {
 			controller.getTxaLog().appendText("IOException occured..\n");
