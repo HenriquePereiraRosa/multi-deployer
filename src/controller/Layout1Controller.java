@@ -55,6 +55,7 @@ public class Layout1Controller {
 	private TriggerHandler triggerHandler;
 
 	private IDevice devices[];
+	
 	private Properties prop;
 
 	@FXML
@@ -77,7 +78,7 @@ public class Layout1Controller {
 					btnAppFile, btnAdbFile;
 
 	@FXML
-	private ComboBox<String> cbDevices;
+	private ComboBox<String> cbDevices;// = new ComboBox<String>();
 
 	@FXML
 	private TextArea txaLog;	
@@ -504,7 +505,6 @@ public class Layout1Controller {
 
 		helper = new AppHelper();
 		fileChooser = new FileChooser();
-		cbDevices = new ComboBox<String>();
 		trigger = new Trigger();
 		triggerHandler = new TriggerHandler();
 		StringBuilder os = new StringBuilder();
@@ -519,16 +519,12 @@ public class Layout1Controller {
 	
 	private void addDevices(IDevice device) {
 		
-		this.setAdb(AndroidDebugBridge.getBridge());
+		//this.setAdb(AndroidDebugBridge.getBridge());
 		progressBar.setProgress(1.0);
 		System.out.println(String.format("%s connected", device.getSerialNumber()));
 
 		if (!cbDevices.getItems().contains(device.getName())) {
-			String name = device.getName();
-			cbDevices.getItems().add(name);
-		}
-		if (!cbDevices.getItems().contains(device.getSerialNumber())) {
-			cbDevices.getItems().removeAll(device.getSerialNumber());
+			cbDevices.getItems().add(device.getName());
 		}
 		enableButtons();
 		
@@ -544,7 +540,7 @@ public class Layout1Controller {
 	
 	private void removeDevices(IDevice device) {
 
-		this.setAdb(AndroidDebugBridge.getBridge());
+		//this.setAdb(AndroidDebugBridge.getBridge());
 		progressBar.setProgress(0.0);
 		System.out.println(String.format("%s disconnected", device.getSerialNumber()));
 		txaLog.appendText("Disconnected: " + device.toString() + "\n");
@@ -553,8 +549,6 @@ public class Layout1Controller {
 			cbDevices.getItems().remove(device.getName());
 			cbDevices.getItems().remove(device.getSerialNumber());
 		}
-		cbDevices.getItems().remove(device.getName());
-		cbDevices.getItems().remove(device.getSerialNumber());
 		if(devices.length < MIN_DEVICES) {
 			btnLaunch.setDisable(true);
 		}
