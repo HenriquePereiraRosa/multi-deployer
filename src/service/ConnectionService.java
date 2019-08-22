@@ -43,9 +43,6 @@ public class ConnectionService implements Runnable {
 			controller.setDevices(controller.getAdb().getDevices());
 
 			if (controller.getDevices().length > 0) {
-				for (int i = 0; i < controller.getDevices().length; i++) {
-					controller.getCbDevices().getItems().add(controller.getDevices()[i].getName());
-				}
 				controller.getTxaLog().appendText("Devices connected. \n");
 				controller.getProgressBar().setProgress(1.0);
 				controller.enableButtons();

@@ -15,6 +15,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.util.Duration;
 import multideployer.MultiDeployer;
+import resources.strings.StringResources;
 
 
 public class Layout3Controller {
@@ -29,7 +30,7 @@ public class Layout3Controller {
     private Button btnClose, btnCopy;
 
     @FXML
-    private Hyperlink hlinkEmail;
+    private Hyperlink hlinkIssue;
 
     @FXML
     private Label lblAdvice;
@@ -59,7 +60,7 @@ public class Layout3Controller {
 	void initialize() {
 		assert btnClose != null : "fx:id=\"btnClose\" was not injected: check your FXML file 'Layout3.fxml'.";
 		assert btnCopy != null : "fx:id=\"btnClose\" was not injected: check your FXML file 'Layout3.fxml'.";
-		assert hlinkEmail != null : "fx:id=\"lblEmail\" was not injected: check your FXML file 'Layout3.fxml'.";
+		assert hlinkIssue != null : "fx:id=\"hlinkIssue\" was not injected: check your FXML file 'Layout3.fxml'.";
 		assert lblAdvice != null : "fx:id=\"lblAdvice\" was not injected: check your FXML file 'Layout3.fxml'.";
         this.initLayout();
 	}
@@ -69,9 +70,27 @@ public class Layout3Controller {
     	MultiDeployer.changeScene(MultiDeployer.LAYOUT1);
     }
 
+    @FXML
+    void openHashLattes(ActionEvent event) {
+    	trigger.addListener(triggerHandler);
+    	trigger.triggerEvent(StringResources.HASHIMOTO_LATTES);
+    }
+
+    @FXML
+    void openLinkedin(ActionEvent event) {
+    	trigger.addListener(triggerHandler);
+    	trigger.triggerEvent(StringResources.HENRIQUE_LINKEDIN);
+    }
+
+    @FXML
+    void goToInsper(ActionEvent event) {
+    	trigger.addListener(triggerHandler);
+    	trigger.triggerEvent(StringResources.INSPER);
+    }
+
     /**
-     * <p> Method to send email by mail to.
-     * <a href=""></a>
+     * <p> Open the repository issue page.
+     * <a href=StringResouges.ISSUE></a>
      * </p>
      * @param ActionEvent triggered in FXML
      * @return void
@@ -79,9 +98,9 @@ public class Layout3Controller {
      * @since 1.0
      */
     @FXML
-    void sendEmail(ActionEvent event) {
+    void openIssue(ActionEvent event) {
     	trigger.addListener(triggerHandler);
-    	trigger.triggerEvent("mailto:henrique.prosa@hotmail.com");
+    	trigger.triggerEvent(StringResources.ISSUE);
 	}
     
     /**
@@ -104,7 +123,7 @@ public class Layout3Controller {
     	
     	final Clipboard clipboard = Clipboard.getSystemClipboard();
         final ClipboardContent content = new ClipboardContent();
-        content.putString("henrique.prosa@hotmail.com");
+        content.putString(StringResources.ISSUE);
         clipboard.setContent(content);
 		
     }

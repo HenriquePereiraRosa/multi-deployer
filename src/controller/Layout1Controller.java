@@ -31,13 +31,15 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import multideployer.MultiDeployer;
 import net.dongliu.apk.parser.ApkFile;
+import resources.strings.StringResources;
 import service.ConnectionService;
 import service.InstallationService;
 import service.LaunchService;
@@ -91,7 +93,8 @@ public class Layout1Controller {
     @FXML
     private MenuItem miBugReport;
 
-	private AnchorPane pane;
+    @FXML
+    private ImageView imgInsper;
 
 		
 	public AndroidDebugBridge getAdb() {
@@ -226,14 +229,6 @@ public class Layout1Controller {
 		return fileChooser;
 	}
 	
-	public void setPane(AnchorPane pane) {
-		this.pane = pane;		
-	}
-	
-	public AnchorPane getPane() {
-		return this.pane;
-	}
-
 	@FXML
 	void initialize() {
         assert lblOS != null : "fx:id=\"lblOS\" was not injected: check your FXML file 'Layout1.fxml'.";
@@ -253,6 +248,7 @@ public class Layout1Controller {
         assert miAboutUs != null : "fx:id=\"miAboutUs\" was not injected: check your FXML file 'Layout1.fxml'.";
         assert miBugReport != null : "fx:id=\"miBugReport\" was not injected: check your FXML file 'Layout1.fxml'.";
         assert miGitCode != null : "fx:id=\"miGitCode\" was not injected: check your FXML file 'Layout1.fxml'.";
+        assert imgInsper != null : "fx:id=\"imgInsper\" was not injected: check your FXML file 'Layout1.fxml'.";
         
 		this.initLayout();
 		
@@ -435,7 +431,8 @@ public class Layout1Controller {
 
 			@Override
 			public void deviceChanged(IDevice device, int arg1) {
-				addDevices(device);
+				// TODO: Check necessity of addDevices(...) here.
+				//addDevices(device);
 			}
 
 			@Override
@@ -456,6 +453,8 @@ public class Layout1Controller {
 		InstallationService service = new InstallationService(this);
 		Thread thread =  new Thread(service);
 		thread.start();
+
+		btnLaunch.setDisable(false);
 	}
 
 	@FXML
@@ -472,6 +471,7 @@ public class Layout1Controller {
 		UninstallationService service = new UninstallationService(this);
 		Thread thread =  new Thread(service);
 		thread.start();
+		btnLaunch.setDisable(true);
 	}
 
 	@FXML
@@ -493,9 +493,20 @@ public class Layout1Controller {
     @FXML
     void openGit(ActionEvent event) {
     	trigger.addListener(triggerHandler);
-    	trigger.triggerEvent("https://github.com/HenriquePereiraRosa/multi-deployer");
+    	trigger.triggerEvent(StringResources.GITHUB);
 	}
-    
+
+    @FXML
+    void openLinkedin(ActionEvent event) {
+    	trigger.addListener(triggerHandler);
+    	trigger.triggerEvent(StringResources.HENRIQUE_LINKEDIN);
+    }
+
+    @FXML
+    void goToInsper(ActionEvent event) {
+    	trigger.addListener(triggerHandler);
+    	trigger.triggerEvent(StringResources.INSPER);
+    }
     
     
     // =========== 			Helpers       ====================
@@ -504,7 +515,6 @@ public class Layout1Controller {
 
 		helper = new AppHelper();
 		fileChooser = new FileChooser();
-		cbDevices = new ComboBox<String>();
 		trigger = new Trigger();
 		triggerHandler = new TriggerHandler();
 		StringBuilder os = new StringBuilder();
@@ -519,18 +529,15 @@ public class Layout1Controller {
 	
 	private void addDevices(IDevice device) {
 		
-		this.setAdb(AndroidDebugBridge.getBridge());
 		progressBar.setProgress(1.0);
 		System.out.println(String.format("%s connected", device.getSerialNumber()));
-
+		
 		if (!cbDevices.getItems().contains(device.getName())) {
-			String name = device.getName();
-			cbDevices.getItems().add(name);
+			cbDevices.getItems().add(device.getName());
 		}
-		if (!cbDevices.getItems().contains(device.getSerialNumber())) {
-			cbDevices.getItems().removeAll(device.getSerialNumber());
+		if(devices.length >= MIN_DEVICES) {
+			enableButtons();
 		}
-		enableButtons();
 		
 		try {
 			txaLog.appendText("Connected: " + device.getName() + " - Battery: "
@@ -544,24 +551,25 @@ public class Layout1Controller {
 	
 	private void removeDevices(IDevice device) {
 
-		this.setAdb(AndroidDebugBridge.getBridge());
 		progressBar.setProgress(0.0);
 		System.out.println(String.format("%s disconnected", device.getSerialNumber()));
 		txaLog.appendText("Disconnected: " + device.toString() + "\n");
 		devices = adb.getDevices();
-		while (cbDevices.getItems().contains(device.getName())) {
+
+		if (cbDevices.getItems().contains(device.getName())) {
 			cbDevices.getItems().remove(device.getName());
+		}
+		
+		if (cbDevices.getItems().contains(device.getSerialNumber())) {
 			cbDevices.getItems().remove(device.getSerialNumber());
 		}
-		cbDevices.getItems().remove(device.getName());
-		cbDevices.getItems().remove(device.getSerialNumber());
+		
 		if(devices.length < MIN_DEVICES) {
 			btnLaunch.setDisable(true);
 		}
 	}
 	
 	public void enableButtons() {
-		cbDevices.setDisable(false);
 		btnInstall.setDisable(false);
 		btnLaunch.setDisable(false);
 		btnUninstall.setDisable(false);		
