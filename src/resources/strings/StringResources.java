@@ -6,6 +6,4 @@ public class StringResources {
 	public static final String GITHUB = "https://github.com/HenriquePereiraRosa/multi-deployer";
 	public static final String ISSUE = GITHUB + "/issues";
 	public static final String INSPER = "https://www.insper.edu.br";
-	
-
 }
