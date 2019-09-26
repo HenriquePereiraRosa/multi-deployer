@@ -1,6 +1,6 @@
 
 02/14 15:21:15: Launching app
-$ adb install-multiple -r -t /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/resources/instant-run/debug/resources-debug.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_3.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_4.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_2.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_1.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_0.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_6.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/dep/dependencies.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_5.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_7.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_8.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_9.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/instant-run-apk/debug/app-debug.apk 
+$ adb install-multiple -r -t /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/br.com.insper.resources/instant-run/debug/br.com.insper.resources-debug.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_3.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_4.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_2.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_1.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_0.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_6.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/dep/dependencies.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_5.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_7.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_8.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/split-apk/debug/slices/slice_9.apk /home/user/AndroidStudioProjects/MyApplication2/app/build/intermediates/instant-run-apk/debug/app-debug.apk
 Split APKs installed in 7 s 334 ms
 $ adb shell am start -n "com.example.myapplication/com.example.myapplication.MapsActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
 Client not ready yet..Waiting for process to come online
@@ -37,13 +37,13 @@ D/mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurfac
 D/OpenGLRenderer: eglCreateWindowSurface = 0x78096a5610, 0x7809812010
 D/ViewRootImpl@ef6b8ee[MapsActivity]: MSG_RESIZED_REPORT: frame=Rect(0, 0 - 1080, 2220) ci=Rect(0, 63 - 0, 126) vi=Rect(0, 63 - 0, 126) or=1
     MSG_WINDOW_FOCUS_CHANGED 1
-V/InputMethodManager: Starting input: tba=android.view.inputmethod.EditorInfo@1240387 nm : com.example.myapplication ic=null
+V/InputMethodManager: Starting input: tba=android.br.com.insper.view.inputmethod.EditorInfo@1240387 nm : com.example.myapplication ic=null
 I/InputMethodManager: startInputInner - mService.startInputOrWindowGainedFocus
 D/InputTransport: Input channel constructed: fd=116
 V/Surface: sf_framedrop debug : 0x4f4c, game : false, logging : 0
 V/Surface: sf_framedrop debug : 0x4f4c, game : false, logging : 0
 D/mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, egl_color_buffer_format *, EGLBoolean) returns 0x3000,  [1080x2031]-format:2
-V/InputMethodManager: Starting input: tba=android.view.inputmethod.EditorInfo@22fec95 nm : com.example.myapplication ic=null
+V/InputMethodManager: Starting input: tba=android.br.com.insper.view.inputmethod.EditorInfo@22fec95 nm : com.example.myapplication ic=null
 D/NetworkSecurityConfig: No Network Security Config specified, using platform default
 I/System.out: (HTTPLog)-Static: isSBSettingEnabled false
     (HTTPLog)-Static: isSBSettingEnabled false
