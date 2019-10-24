@@ -1,5 +1,7 @@
 package br.com.insper.controller;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -43,6 +45,9 @@ import br.com.insper.service.ConnectionService;
 import br.com.insper.service.InstallationService;
 import br.com.insper.service.LaunchService;
 import br.com.insper.service.UninstallationService;
+
+
+
 
 
 public class Layout1Controller {
@@ -248,7 +253,7 @@ public class Layout1Controller {
         assert miBugReport != null : "fx:id=\"miBugReport\" was not injected: check your FXML file 'Layout1.fxml'.";
         assert miGitCode != null : "fx:id=\"miGitCode\" was not injected: check your FXML file 'Layout1.fxml'.";
         assert imgInsper != null : "fx:id=\"imgInsper\" was not injected: check your FXML file 'Layout1.fxml'.";
-        
+
 		this.initLayout();
 		
 		try {
@@ -293,6 +298,8 @@ public class Layout1Controller {
 			}
 		}
 
+
+
 	}
 
 	@FXML
@@ -318,7 +325,9 @@ public class Layout1Controller {
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Applications files", "*.apk"));
 
-		if (file != null) {
+
+
+		if (file.exists()) {
 			helper.setAppPath(file.getPath());
 			txaLog.appendText(helper.getAppPath() + "\n");
 			txtFieldAppPath.setText(helper.getAppPath());
@@ -348,10 +357,100 @@ public class Layout1Controller {
 
 			}
 		} else {
-			txaLog.appendText("No app file selected. \n");
+			txaLog.appendText("App not found. \n");
 		}
 
 	}
+
+	@FXML
+	void key_enterAdbFile(Event event) {
+		Parent parent = new Pane();
+		Scene scene = new Scene(parent);
+		Stage stage = new Stage();
+		stage.setScene(scene);
+
+		String adbPath = txtFieldAdbPath.getText();
+		File file = new File(adbPath);
+
+		if (file.exists()) {
+			helper.setAdbPath(file.getPath());
+			txaLog.appendText(helper.getAdbPath() + "\n");
+			txtFieldAdbPath.setText(helper.getAdbPath());
+			txtFieldAdbPath.setAlignment(Pos.CENTER_RIGHT);
+
+			OutputStream output = null;
+
+			try {
+				output = new FileOutputStream("file.path");
+				prop.setProperty("adbPath", helper.getAdbPath());
+				prop.store(output, null);
+
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			} catch (NullPointerException npe) {
+				System.out.println("Output: " + output);
+				npe.printStackTrace();
+
+			} finally {
+				if (output != null) {
+					try {
+						output.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		} else {
+			txaLog.appendText("No adb file selected. \n");
+		}
+	}
+
+	@FXML
+	void key_enterAppFile(Event event) {
+
+		Parent parent = new Pane();
+		Scene scene = new Scene(parent);
+		Stage stage = new Stage();
+		stage.setScene(scene);
+
+		String appPath = txtFieldAppPath.getText();
+		File file = new File(appPath);
+
+		if (file.exists()) {
+			helper.setAppPath(file.getPath());
+			txaLog.appendText(helper.getAppPath() + "\n");
+			txtFieldAppPath.setText(helper.getAppPath());
+			txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
+
+			OutputStream output = null;
+
+			try {
+				output = new FileOutputStream("file.path");
+				prop.setProperty("appPath", helper.getAppPath());
+				prop.store(output, null);
+
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			} catch (NullPointerException npe) {
+				System.out.println("Output: " + output);
+				npe.printStackTrace();
+
+			} finally {
+				if (output != null) {
+					try {
+						output.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		} else {
+			txaLog.appendText("No app file selected. \n");
+		}
+	}
+
 
 	@FXML
 	void selectAdbFile(Event event) {
@@ -365,7 +464,7 @@ public class Layout1Controller {
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("ADB executor", "*adb*.*"));
 		
-		if (file != null) {
+		if (file.exists()) {
 			helper.setAdbPath(file.getPath());
 			txaLog.appendText(helper.getAdbPath() + "\n");
 			txtFieldAdbPath.setText(helper.getAdbPath());
