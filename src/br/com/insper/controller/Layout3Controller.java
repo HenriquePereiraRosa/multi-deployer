@@ -58,16 +58,16 @@ public class Layout3Controller {
 
 	@FXML
 	void initialize() {
-		assert btnClose != null : "fx:id=\"btnClose\" was not injected: check your FXML file 'Layout3.fxml'.";
-		assert btnCopy != null : "fx:id=\"btnClose\" was not injected: check your FXML file 'Layout3.fxml'.";
-		assert hlinkIssue != null : "fx:id=\"hlinkIssue\" was not injected: check your FXML file 'Layout3.fxml'.";
-		assert lblAdvice != null : "fx:id=\"lblAdvice\" was not injected: check your FXML file 'Layout3.fxml'.";
+		assert btnClose != null : StringResources.BTN_CLOSE_LAYOUT3;
+		assert btnCopy != null : StringResources.BTN_COPY_LAYOUT3;
+		assert hlinkIssue != null : StringResources.HLINK_ISSUE;
+		assert lblAdvice != null : StringResources.LBL_ADVICE;
         this.initLayout();
 	}
 
     @FXML
     void goToScreen1(ActionEvent event) {    	
-    	MultiDeployer.changeScene(MultiDeployer.LAYOUT1);
+    	MultiDeployer.changeScene(StringResources.LAYOUT1);
     }
 
     @FXML

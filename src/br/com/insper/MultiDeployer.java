@@ -4,6 +4,7 @@ package br.com.insper;
 
 import java.io.IOException;
 
+import br.com.insper.resources.strings.StringResources;
 import br.com.insper.controller.Layout1Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -13,12 +14,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class MultiDeployer extends Application {
-	
-	private static String LOGO = "/br/com/insper/resources/img/logo.png";
-	public static String LAYOUT1 = "br/com/insper/view/Layout1.fxml";
-	public static String LAYOUT2 = "br/com/insper/view/Layout2.fxml";
-	public static String LAYOUT3 = "br/com/insper/view/Layout3.fxml";
-	
 	private Layout1Controller layout1Ctrl;
 	private static AnchorPane root;
 	private static Stage stage;
@@ -35,17 +30,17 @@ public class MultiDeployer extends Application {
 		layout1Ctrl = new Layout1Controller();
 
 		try {
-			MultiDeployer.stage.getIcons().add(new Image(getClass().getResourceAsStream(LOGO)));
+			MultiDeployer.stage.getIcons().add(new Image(getClass().getResourceAsStream(StringResources.LOGO)));
 			} catch (NullPointerException e) {
 			System.out.println("logo.png not found.");
 			e.printStackTrace();
 		}
 		
 		try {
-			MultiDeployer.root = FXMLLoader.load(getClass().getClassLoader().getResource(LAYOUT1));
+			MultiDeployer.root = FXMLLoader.load(getClass().getClassLoader().getResource(StringResources.LAYOUT1));
 			Scene scene = new Scene(root);
 			
-			MultiDeployer.stage.setTitle(" Multi Deployer Of Apps");
+			MultiDeployer.stage.setTitle(StringResources.UPPERBAR_TITLE);
 			MultiDeployer.stage.setScene(scene);
 			MultiDeployer.stage.show();
 		} catch (IOException e) {
