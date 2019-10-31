@@ -1,5 +1,9 @@
 package br.com.insper.controller.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class AppHelper {
 
 	private String appPath;
@@ -39,6 +43,41 @@ public class AppHelper {
 
 	public void setPackageName(String packageName) {
 		this.packageName = packageName;
+	}
+
+	public String findAdbPath(String OS){
+
+		Process p;
+		try {
+			if(OS.equals(("windows"))){
+				p = Runtime.getRuntime().exec("where adb");
+
+			}else {
+				if (OS.equals(("linux")) || OS.equals(("mac"))) {
+					p = Runtime.getRuntime().exec("which adb");
+				}else{
+					return null;
+				}
+			}
+
+			p.waitFor();
+			BufferedReader reader=new BufferedReader(new InputStreamReader(
+					p.getInputStream()));
+			String line;
+			while((line = reader.readLine()) != null) {
+				System.out.println(line);
+				return line;
+
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public String extractActivity (String manifest) {
