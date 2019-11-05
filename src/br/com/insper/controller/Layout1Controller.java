@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener;
@@ -549,7 +550,11 @@ public class Layout1Controller {
 
 			@Override
 			public void deviceConnected(IDevice device) {
-				addDevices(device);
+				try {
+					addDevices(device);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 
 			@Override
@@ -641,7 +646,7 @@ public class Layout1Controller {
 	}
 
 
-	private void addDevices(IDevice device) {
+	private void addDevices(IDevice device) throws InterruptedException {
 
 		progressBar.setProgress(1.0);
 		System.out.println(String.format("%s connected", device.getSerialNumber()));
@@ -652,6 +657,7 @@ public class Layout1Controller {
 		if(devices.length >= MIN_DEVICES) {
 			enableButtons();
 		}
+		TimeUnit.SECONDS.sleep(5);
 
 		try {
 			txaLog.appendText("Connected: " + device.getName() + " - Battery: "
