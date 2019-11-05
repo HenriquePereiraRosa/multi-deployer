@@ -629,7 +629,9 @@ public class Layout1Controller {
 		
 		progressBar.setProgress(1.0);
 		System.out.println(String.format("%s connected", device.getSerialNumber()));
-		
+
+		devices = adb.getDevices();
+
 		if (!cbDevices.getItems().contains(device.getName())) {
 			cbDevices.getItems().add(device.getName());
 		}
