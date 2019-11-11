@@ -231,26 +231,26 @@ public class Layout1Controller {
 	}
 
 	@FXML
-	void initialize() throws IOException {
-		assert lblOS != null : "fx:id=\"lblOS\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert txtFieldAppPath != null : "fx:id=\"txtFieldAppPath\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnAppFile != null : "fx:id=\"btnAppFile\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert progressBar != null : "fx:id=\"progressBar\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert txtFieldAdbPath != null : "fx:id=\"txtFieldAdbPath\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnAdbFile != null : "fx:id=\"btnAdbFile\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert cbDevices != null : "fx:id=\"cbDevices\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnInstall != null : "fx:id=\"btnInstall\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnLaunch != null : "fx:id=\"btnLaunch\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert txaLog != null : "fx:id=\"txaLog\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnUninstall != null : "fx:id=\"btnUninstall\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert miClose != null : "fx:id=\"miClose\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert miClearLogs != null : "fx:id=\"miClearLogs\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert miAboutUs != null : "fx:id=\"miAboutUs\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert miBugReport != null : "fx:id=\"miBugReport\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert miGitCode != null : "fx:id=\"miGitCode\" was not injected: check your FXML file 'Layout1.fxml'.";
-		assert imgInsper != null : "fx:id=\"imgInsper\" was not injected: check your FXML file 'Layout1.fxml'.";
 
+	void initialize() {
+        assert lblOS != null : StringResources.LB_OS;
+        assert txtFieldAppPath != null : StringResources.TXT_FIELD_APP_PATH;
+        assert btnAppFile != null : StringResources.BTN_APP_FILE;
+        assert progressBar != null : StringResources.PROGRESS_BAR;
+        assert txtFieldAdbPath != null : StringResources.TXT_FIELD_ADB_PATH;
+        assert btnAdbFile != null : StringResources.BTN_ADB_FILE;
+        assert cbDevices != null : StringResources.CB_DEVICES;
+        assert btnInstall != null : StringResources.BTN_INSTALL;
+        assert btnLaunch != null : StringResources.BTN_LAUNCH;
+        assert txaLog != null : StringResources.TXA_LOG;
+        assert btnUninstall != null : StringResources.BTN_UNINSTALL;
+        assert btnClear != null : StringResources.BTN_CLEAR;
+        assert miClose != null : StringResources.MI_CLOSE;
+        assert miClearLogs != null : StringResources.MI_CLEAR_LOGS;
+        assert miAboutUs != null : StringResources.MI_ABOUT_US;
+        assert miBugReport != null : StringResources.MI_BUG_REPORT;
+        assert miGitCode != null : StringResources.MI_GIT_CODE;
+        assert imgInsper != null : StringResources.IMG_INSPER;
 		this.initLayout();
 
 		try {
@@ -591,37 +591,38 @@ public class Layout1Controller {
 		txaLog.clear();
 	}
 
-	@FXML
-	void showAboutUs(ActionEvent event) {
-		MultiDeployer.changeScene(MultiDeployer.LAYOUT2);
-	}
 
-	@FXML
-	void showBugReport(ActionEvent event) {
-		MultiDeployer.changeScene(MultiDeployer.LAYOUT3);
+  @FXML
+  void showAboutUs(ActionEvent event) {
+    MultiDeployer.changeScene(StringResources.LAYOUT2);
+  }
 
-	}
+  @FXML
+  void showBugReport(ActionEvent event) {
+    MultiDeployer.changeScene(StringResources.LAYOUT3);
 
-	@FXML
-	void openGit(ActionEvent event) {
-		trigger.addListener(triggerHandler);
-		trigger.triggerEvent(StringResources.GITHUB);
-	}
+  }
 
-	@FXML
-	void openLinkedin(ActionEvent event) {
-		trigger.addListener(triggerHandler);
-		trigger.triggerEvent(StringResources.HENRIQUE_LINKEDIN);
-	}
+  @FXML
+  void openGit(ActionEvent event) {
+    trigger.addListener(triggerHandler);
+    trigger.triggerEvent(StringResources.GITHUB);
+}
 
-	@FXML
-	void goToInsper(ActionEvent event) {
-		trigger.addListener(triggerHandler);
-		trigger.triggerEvent(StringResources.INSPER);
-	}
+  @FXML
+  void openLinkedin(ActionEvent event) {
+    trigger.addListener(triggerHandler);
+    trigger.triggerEvent(StringResources.HENRIQUE_LINKEDIN);
+  }
 
-
-	// =========== 			Helpers       ====================
+  @FXML
+  void goToInsper(ActionEvent event) {
+    trigger.addListener(triggerHandler);
+    trigger.triggerEvent(StringResources.INSPER);
+  }
+    
+    
+    // =========== 			Helpers       ====================
 
 	private void initLayout() {
 
@@ -692,32 +693,36 @@ public class Layout1Controller {
 	private void showPathHints(String os) {
 
 		if(os.contains("windows")) {
+
 			this.OS = "windows";
 
-			txaLog.appendText("# Windows Detected\n\n");
-			txaLog.appendText("- Example of .apk path:\n");
-			txaLog.appendText("C:\\..\\MyApp\\app\\build\\outputs\\apk\\debug\\app-debug.apk\n\n");
-			txaLog.appendText("- Example of AVD path:\n");
-			txaLog.appendText("C:\\Users\\user\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe\n\n");
+			txaLog.appendText(StringResources.WINDOWS_DETECTED);
+			txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
+			txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
+			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
+			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH);
+
 
 
 		} else if(os.contains("linux")) {
+
 			this.OS = "linux";
 
-			txaLog.appendText("# Linux Detected\n\n");
-			txaLog.appendText("- Example of .apk path:\n");
-			txaLog.appendText("GET THE PATH FOR LINUX\n\n");
-			txaLog.appendText("- Example of AVD path:\n");
-			txaLog.appendText("GET THE PATH FOR LINUX\n\n");
+			txaLog.appendText(StringResources.LINUX_DETECTED);
+			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
+			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
+			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
+			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
 
-		} else if(os.contains("mac")) {
-			this.OS = "mac";
-
-			txaLog.appendText("# Mac OS Detected\n\n");
-			txaLog.appendText("- Example of .apk path:\n");
-			txaLog.appendText("/Users/agile/Downloads/apk/app-debug.apk\n\n");
-			txaLog.appendText("- Example of AVD path:\n");
-			txaLog.appendText("/Users/agile/Library/Android/sdk/platform-tools/adb\n\n");
+		} else if(os.contains("mac")) 
+      
+      this.os = "mac";
+      
+			txaLog.appendText(StringResources.MAC_DETECTED);
+			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
+			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_MAC);
+			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
+			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_MAC);
 		}
 	}
 
