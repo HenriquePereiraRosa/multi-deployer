@@ -36,9 +36,9 @@ public class Layout2Controller {
     
 	@FXML
 	void initialize() {
-        assert btnClose != null : "fx:id=\"btnClose\" was not injected: check your FXML file 'Layout2.fxml'.";
-        assert hlinkHashimoto != null : "fx:id=\"hlinkHashimoto\" was not injected: check your FXML file 'Layout2.fxml'.";
-        assert hlinkHenriqueRosa != null : "fx:id=\"hlinkHenriqueRosa\" was not injected: check your FXML file 'Layout2.fxml'.";
+        assert btnClose != null : StringResources.BTN_CLOSE_LAYOUT2;
+        assert hlinkHashimoto != null : StringResources.HLINK_HASHIMOTO;
+        assert hlinkHenriqueRosa != null : StringResources.HLINK_HENRIQUEROSA;
 
 		trigger = new Trigger();
 		triggerHandler = new TriggerHandler();
@@ -46,7 +46,7 @@ public class Layout2Controller {
 
     @FXML
     void goToScreen1(ActionEvent event) {    	
-    	MultiDeployer.changeScene(MultiDeployer.LAYOUT1);
+    	MultiDeployer.changeScene(StringResources.LAYOUT1);
     }
 
     @FXML
