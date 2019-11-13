@@ -18,7 +18,7 @@ public class AppHelper {
 	}
 
 	public String getAdbPath() {
-		return adbPath;
+		return this.adbPath;
 	}
 
 	public void setAdbPath(String adbPath) {

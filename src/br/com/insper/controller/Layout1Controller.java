@@ -1,7 +1,5 @@
 package br.com.insper.controller;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,9 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.NoSuchFileException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
+import java.util.zip.ZipException;
 
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener;
@@ -47,46 +47,43 @@ import br.com.insper.service.LaunchService;
 import br.com.insper.service.UninstallationService;
 
 
-
-
-
 public class Layout1Controller {
-	
-	private final int MIN_DEVICES = 1;
-	
-	private FileChooser fileChooser;
-	private AndroidDebugBridge adb;
-	private AppHelper helper;
-	private Trigger trigger;
-	private TriggerHandler triggerHandler;
 
-	private IDevice devices[];
-	private Properties prop;
+    private final int MIN_DEVICES = 1;
 
-	@FXML
-	private ResourceBundle resources;
+    private FileChooser fileChooser;
+    private AndroidDebugBridge adb;
+    private AppHelper helper;
+    private Trigger trigger;
+    private TriggerHandler triggerHandler;
 
-	@FXML
-	private URL location;
-	
-	@FXML
+    private IDevice devices[];
+    private Properties prop;
+
+    @FXML
+    private ResourceBundle resources;
+
+    @FXML
+    private URL location;
+
+    @FXML
     private Label lblOS;
-	
-	@FXML
-	private TextField txtFieldAppPath, txtFieldAdbPath;
 
-	@FXML
-	private ProgressBar progressBar;
+    @FXML
+    private TextField txtFieldAppPath, txtFieldAdbPath;
 
-	@FXML
-	private Button btnInstall, btnClear, btnUninstall, btnLaunch,
-					btnAppFile, btnAdbFile;
+    @FXML
+    private ProgressBar progressBar;
 
-	@FXML
-	private ComboBox<String> cbDevices;
+    @FXML
+    private Button btnInstall, btnClear, btnUninstall, btnLaunch,
+            btnAppFile, btnAdbFile;
 
-	@FXML
-	private TextArea txaLog;	
+    @FXML
+    private ComboBox<String> cbDevices;
+
+    @FXML
+    private TextArea txaLog;
 
     @FXML
     private MenuItem miClose;
@@ -100,141 +97,141 @@ public class Layout1Controller {
     @FXML
     private ImageView imgInsper;
 
-		
-	public AndroidDebugBridge getAdb() {
-		return adb;
-	}
 
-	public void setAdb(AndroidDebugBridge adb) {
-		this.adb = adb;
-	}
+    public AndroidDebugBridge getAdb() {
+        return adb;
+    }
 
-	public AppHelper getHelper() {
-		return helper;
-	}
+    public void setAdb(AndroidDebugBridge adb) {
+        this.adb = adb;
+    }
 
-	public void setHelper(AppHelper helper) {
-		this.helper = helper;
-	}
+    public AppHelper getHelper() {
+        return helper;
+    }
 
-	public IDevice[] getDevices() {
-		return devices;
-	}
+    public void setHelper(AppHelper helper) {
+        this.helper = helper;
+    }
 
-	public void setDevices(IDevice[] devices) {
-		this.devices = devices;
-	}
+    public IDevice[] getDevices() {
+        return devices;
+    }
 
-	public Properties getProp() {
-		return prop;
-	}
+    public void setDevices(IDevice[] devices) {
+        this.devices = devices;
+    }
 
-	public void setProp(Properties prop) {
-		this.prop = prop;
-	}
+    public Properties getProp() {
+        return prop;
+    }
 
-	public ResourceBundle getResources() {
-		return resources;
-	}
+    public void setProp(Properties prop) {
+        this.prop = prop;
+    }
 
-	public void setResources(ResourceBundle resources) {
-		this.resources = resources;
-	}
+    public ResourceBundle getResources() {
+        return resources;
+    }
 
-	public URL getLocation() {
-		return location;
-	}
+    public void setResources(ResourceBundle resources) {
+        this.resources = resources;
+    }
 
-	public void setLocation(URL location) {
-		this.location = location;
-	}
-		
-	public Label getLblOS() {
-		return lblOS;
-	}
+    public URL getLocation() {
+        return location;
+    }
 
-	public void setLblOS(Label lblOS) {
-		this.lblOS = lblOS;
-	}
+    public void setLocation(URL location) {
+        this.location = location;
+    }
 
-	public TextField getTxtFieldAppPath() {
-		return txtFieldAppPath;
-	}
+    public Label getLblOS() {
+        return lblOS;
+    }
 
-	public void setTxtFieldAppPath(TextField txtFieldAppPath) {
-		this.txtFieldAppPath = txtFieldAppPath;
-	}
+    public void setLblOS(Label lblOS) {
+        this.lblOS = lblOS;
+    }
 
-	public TextField getTxtFieldAdbPath() {
-		return txtFieldAdbPath;
-	}
+    public TextField getTxtFieldAppPath() {
+        return txtFieldAppPath;
+    }
 
-	public void setTxtFieldAdbPath(TextField txtFieldAdbPath) {
-		this.txtFieldAdbPath = txtFieldAdbPath;
-	}
+    public void setTxtFieldAppPath(TextField txtFieldAppPath) {
+        this.txtFieldAppPath = txtFieldAppPath;
+    }
 
-	public ProgressBar getProgressBar() {
-		return progressBar;
-	}
+    public TextField getTxtFieldAdbPath() {
+        return txtFieldAdbPath;
+    }
 
-	public void setProgressBar(ProgressBar progressBar) {
-		this.progressBar = progressBar;
-	}
+    public void setTxtFieldAdbPath(TextField txtFieldAdbPath) {
+        this.txtFieldAdbPath = txtFieldAdbPath;
+    }
 
-	public Button getBtnInstall() {
-		return btnInstall;
-	}
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
 
-	public void setBtnInstall(Button btnInstall) {
-		this.btnInstall = btnInstall;
-	}
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
 
-	public Button getBtnClear() {
-		return btnClear;
-	}
+    public Button getBtnInstall() {
+        return btnInstall;
+    }
 
-	public void setBtnClear(Button btnClear) {
-		this.btnClear = btnClear;
-	}
+    public void setBtnInstall(Button btnInstall) {
+        this.btnInstall = btnInstall;
+    }
 
-	public Button getBtnUninstall() {
-		return btnUninstall;
-	}
+    public Button getBtnClear() {
+        return btnClear;
+    }
 
-	public void setBtnUninstall(Button btnUninstall) {
-		this.btnUninstall = btnUninstall;
-	}
+    public void setBtnClear(Button btnClear) {
+        this.btnClear = btnClear;
+    }
 
-	public Button getBtnLaunch() {
-		return btnLaunch;
-	}
+    public Button getBtnUninstall() {
+        return btnUninstall;
+    }
 
-	public void setBtnLaunch(Button btnLaunch) {
-		this.btnLaunch = btnLaunch;
-	}
+    public void setBtnUninstall(Button btnUninstall) {
+        this.btnUninstall = btnUninstall;
+    }
 
-	public ComboBox<String> getCbDevices() {
-		return cbDevices;
-	}
+    public Button getBtnLaunch() {
+        return btnLaunch;
+    }
 
-	public void setCbDevices(ComboBox<String> cbDevices) {
-		this.cbDevices = cbDevices;
-	}
+    public void setBtnLaunch(Button btnLaunch) {
+        this.btnLaunch = btnLaunch;
+    }
 
-	public TextArea getTxaLog() {
-		return txaLog;
-	}
+    public ComboBox<String> getCbDevices() {
+        return cbDevices;
+    }
 
-	public void setTxaLog(TextArea txaLog) {
-		this.txaLog = txaLog;
-	}
+    public void setCbDevices(ComboBox<String> cbDevices) {
+        this.cbDevices = cbDevices;
+    }
 
-	public FileChooser getFileChooser() {
-		return fileChooser;
-	}
-	
-	@FXML
-	void initialize() {
+    public TextArea getTxaLog() {
+        return txaLog;
+    }
+
+    public void setTxaLog(TextArea txaLog) {
+        this.txaLog = txaLog;
+    }
+
+    public FileChooser getFileChooser() {
+        return fileChooser;
+    }
+
+    @FXML
+    void initialize() {
         assert lblOS != null : StringResources.LB_OS;
         assert txtFieldAppPath != null : StringResources.TXT_FIELD_APP_PATH;
         assert btnAppFile != null : StringResources.BTN_APP_FILE;
@@ -253,449 +250,439 @@ public class Layout1Controller {
         assert miBugReport != null : StringResources.MI_BUG_REPORT;
         assert miGitCode != null : StringResources.MI_GIT_CODE;
         assert imgInsper != null : StringResources.IMG_INSPER;
-        
-		this.initLayout();
-		
-		try {
-			System.out.println("Initializing the DEBUG bridge.");
-			AndroidDebugBridge.init(false);
-		} catch (Exception e) {
-			txaLog.appendText("Exception in init()\n");
-			e.printStackTrace();
-		}
 
-		prop = new Properties();
-		InputStream input = null;
+        this.initLayout();
 
-		try {
-			input = new FileInputStream("file.path");
-			
-			prop.load(input);
-			helper.setAppPath(prop.getProperty("appPath"));
-			System.out.println(helper.getAppPath());
-			
-			if (helper.getAppPath() != null) {
-				txtFieldAppPath.setText(helper.getAppPath());
-				txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
-			}
-			helper.setAdbPath(prop.getProperty("adbPath"));
-			System.out.println(helper.getAdbPath());
-			if (helper.getAdbPath() != null) {
-				txtFieldAdbPath.setText(helper.getAdbPath());
-				txtFieldAdbPath.setAlignment(Pos.CENTER_RIGHT);
-				this.connectDevices();
-			}
+        try {
+            System.out.println("Initializing the DEBUG bridge.");
+            AndroidDebugBridge.init(false);
+        } catch (Exception e) {
+            txaLog.appendText("Exception in init()\n");
+            e.printStackTrace();
+        }
 
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+        prop = new Properties();
+        InputStream input = null;
 
+        try {
+            input = new FileInputStream("file.path");
 
+            prop.load(input);
+            helper.setAppPath(prop.getProperty("appPath"));
+            System.out.println(helper.getAppPath());
 
-	}
+            if (helper.getAppPath() != null) {
+                txtFieldAppPath.setText(helper.getAppPath());
+                txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
+            }
+            helper.setAdbPath(prop.getProperty("adbPath"));
+            System.out.println(helper.getAdbPath());
+            if (helper.getAdbPath() != null) {
+                txtFieldAdbPath.setText(helper.getAdbPath());
+                txtFieldAdbPath.setAlignment(Pos.CENTER_RIGHT);
+                this.connectDevices();
+            }
 
-	@FXML
-	public void closeWindowEvent(Event event) {
-		try {
-			System.out.println("Closing the DEBUG bridge.");
-			AndroidDebugBridge.terminate();
-			System.exit(0);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@FXML
-	void selectAppFile(Event event) {
-
-		Parent parent = new Pane();
-		Scene scene = new Scene(parent);
-		Stage stage = new Stage();
-		stage.setScene(scene);
-
-		File file = fileChooser.showOpenDialog(stage);
-
-		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Applications files", "*.apk"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
 
+    }
 
-		if (file.exists()) {
-			helper.setAppPath(file.getPath());
-			txaLog.appendText(helper.getAppPath() + "\n");
-			txtFieldAppPath.setText(helper.getAppPath());
-			txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
-			
-			OutputStream output = null;
+    @FXML
+    public void closeWindowEvent(Event event) {
+        try {
+            System.out.println("Closing the DEBUG bridge.");
+            AndroidDebugBridge.terminate();
+            System.exit(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-			try {
-				output = new FileOutputStream("file.path");
-				prop.setProperty("appPath", helper.getAppPath());
-				prop.store(output, null);
+    @FXML
+    void selectAppFile(Event event) {
 
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} catch (NullPointerException npe) {
-				System.out.println("Output: " + output);
-				npe.printStackTrace();
+        Parent parent = new Pane();
+        Scene scene = new Scene(parent);
+        Stage stage = new Stage();
+        stage.setScene(scene);
 
-			} finally {
-				if (output != null) {
-					try {
-						output.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+        File file = fileChooser.showOpenDialog(stage);
 
-			}
-		} else {
-			txaLog.appendText("App not found. \n");
-		}
-
-	}
-
-	@FXML
-	void key_enterAdbFile(Event event) {
-		Parent parent = new Pane();
-		Scene scene = new Scene(parent);
-		Stage stage = new Stage();
-		stage.setScene(scene);
-
-		String adbPath = txtFieldAdbPath.getText();
-		File file = new File(adbPath);
-
-		if (file.exists()) {
-			helper.setAdbPath(file.getPath());
-			txaLog.appendText(helper.getAdbPath() + "\n");
-			txtFieldAdbPath.setText(helper.getAdbPath());
-			txtFieldAdbPath.setAlignment(Pos.CENTER_RIGHT);
-
-			OutputStream output = null;
-
-			try {
-				output = new FileOutputStream("file.path");
-				prop.setProperty("adbPath", helper.getAdbPath());
-				prop.store(output, null);
-
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} catch (NullPointerException npe) {
-				System.out.println("Output: " + output);
-				npe.printStackTrace();
-
-			} finally {
-				if (output != null) {
-					try {
-						output.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-			}
-		} else {
-			txaLog.appendText("No adb file selected. \n");
-		}
-	}
-
-	@FXML
-	void key_enterAppFile(Event event) {
-
-		Parent parent = new Pane();
-		Scene scene = new Scene(parent);
-		Stage stage = new Stage();
-		stage.setScene(scene);
-
-		String appPath = txtFieldAppPath.getText();
-		File file = new File(appPath);
-
-		if (file.exists()) {
-			helper.setAppPath(file.getPath());
-			txaLog.appendText(helper.getAppPath() + "\n");
-			txtFieldAppPath.setText(helper.getAppPath());
-			txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
-
-			OutputStream output = null;
-
-			try {
-				output = new FileOutputStream("file.path");
-				prop.setProperty("appPath", helper.getAppPath());
-				prop.store(output, null);
-
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} catch (NullPointerException npe) {
-				System.out.println("Output: " + output);
-				npe.printStackTrace();
-
-			} finally {
-				if (output != null) {
-					try {
-						output.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-			}
-		} else {
-			txaLog.appendText("No app file selected. \n");
-		}
-	}
+        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Applications files", "*.apk"));
 
 
-	@FXML
-	void selectAdbFile(Event event) {
+        if (file.exists()) {
+            helper.setAppPath(file.getPath());
+            txaLog.appendText(helper.getAppPath() + "\n");
+            txtFieldAppPath.setText(helper.getAppPath());
+            txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
 
-		Parent parent = new Pane();
-		Scene scene = new Scene(parent);
-		Stage stage = new Stage();
-		stage.setScene(scene);
+            OutputStream output = null;
 
-		File file = fileChooser.showOpenDialog(stage);
+            try {
+                output = new FileOutputStream("file.path");
+                prop.setProperty("appPath", helper.getAppPath());
+                prop.store(output, null);
 
-		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("ADB executor", "*adb*.*"));
-		
-		if (file.exists()) {
-			helper.setAdbPath(file.getPath());
-			txaLog.appendText(helper.getAdbPath() + "\n");
-			txtFieldAdbPath.setText(helper.getAdbPath());
-			txtFieldAdbPath.setAlignment(Pos.CENTER_RIGHT);
-			
-			OutputStream output = null;
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            } catch (NullPointerException npe) {
+                System.out.println("Output: " + output);
+                npe.printStackTrace();
 
-			try {
-				output = new FileOutputStream("file.path");
-				prop.setProperty("adbPath", helper.getAdbPath());
-				prop.store(output, null);
-				this.connectDevices();
+            } finally {
+                if (output != null) {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} catch (NullPointerException npe) {
-				System.out.println("Output: " + output);
-				npe.printStackTrace();
+            }
+        } else {
+            txaLog.appendText("App not found. \n");
+        }
 
-			} finally {
-				if (output != null) {
-					try {
-						output.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+    }
 
-			}
-		} else {
-			txaLog.appendText("No adb file selected. \n");
-		}
+    @FXML
+    void key_enterAdbFile(Event event) {
+        Parent parent = new Pane();
+        Scene scene = new Scene(parent);
+        Stage stage = new Stage();
+        stage.setScene(scene);
 
-	}
-	
-	@FXML
-	void selectActivityFile(Event event) {
-		txaLog.appendText("Lack of implementation.. rsrs\n");
-	}
+        String adbPath = txtFieldAdbPath.getText();
+        File file = new File(adbPath);
 
-	private void connectDevices() {
-		
-		if(this.getAdb() == null) {
-			ConnectionService service = new ConnectionService(this);
-			Thread thread =  new Thread(service);
-			thread.start();
-		}
-		
-		ApkFile apk;
-		try {
-			apk = new ApkFile(helper.getAppPath());
-			String manifest = apk.getManifestXml();
-			helper.setActivityName(helper.extractActivity(manifest));
-			txaLog.appendText("apk Activity: " + helper.getActivityName() + "\n");
-			helper.setPackageName(helper.extractPackage(manifest));
-			txaLog.appendText("apk Package: " + helper.getPackageName() + "\n");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+        if (file.exists()) {
+            helper.setAdbPath(file.getPath());
+            txaLog.appendText(helper.getAdbPath() + "\n");
+            txtFieldAdbPath.setText(helper.getAdbPath());
+            txtFieldAdbPath.setAlignment(Pos.CENTER_RIGHT);
 
-		AndroidDebugBridge.addDeviceChangeListener(new IDeviceChangeListener() {
+            OutputStream output = null;
 
-			@Override
-			public void deviceChanged(IDevice device, int arg1) {
-				// TODO: Check necessity of addDevices(...) here.
-				//addDevices(device);
-			}
+            try {
+                output = new FileOutputStream("file.path");
+                prop.setProperty("adbPath", helper.getAdbPath());
+                prop.store(output, null);
 
-			@Override
-			public void deviceConnected(IDevice device) {
-				addDevices(device);
-			}
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            } catch (NullPointerException npe) {
+                System.out.println("Output: " + output);
+                npe.printStackTrace();
 
-			@Override
-			public void deviceDisconnected(IDevice device) {
-				removeDevices(device);
-			}
-		});
-	}
+            } finally {
+                if (output != null) {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-	@FXML
-	void install(ActionEvent event) {
-		
-		InstallationService service = new InstallationService(this);
-		Thread thread =  new Thread(service);
-		thread.start();
+            }
+        } else {
+            txaLog.appendText("No adb file selected. \n");
+        }
+    }
 
-		btnLaunch.setDisable(false);
-	}
+    @FXML
+    void key_enterAppFile(Event event) {
 
-	@FXML
-	void launch(ActionEvent event) {
-		
-		LaunchService service = new LaunchService(this);
-		Thread thread =  new Thread(service);
-		thread.start();
-	}
+        Parent parent = new Pane();
+        Scene scene = new Scene(parent);
+        Stage stage = new Stage();
+        stage.setScene(scene);
 
-	@FXML
-	void uninstall(ActionEvent event) {
-		
-		UninstallationService service = new UninstallationService(this);
-		Thread thread =  new Thread(service);
-		thread.start();
-		btnLaunch.setDisable(true);
-	}
+        String appPath = txtFieldAppPath.getText();
+        File file = new File(appPath);
 
-	@FXML
-	void ClearHistory(ActionEvent event) {
-		txaLog.clear();
-	}
+        if (file.exists()) {
+            helper.setAppPath(file.getPath());
+            txaLog.appendText(helper.getAppPath() + "\n");
+            txtFieldAppPath.setText(helper.getAppPath());
+            txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
+
+            try (OutputStream output = new FileOutputStream("file.path")) {
+                prop.setProperty("appPath", helper.getAppPath());
+                prop.store(output, null);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+            }
+
+        } else {
+            txaLog.appendText("No app file selected. \n");
+        }
+    }
+
+
+    @FXML
+    void selectAdbFile(Event event) {
+
+        Parent parent = new Pane();
+        Scene scene = new Scene(parent);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+
+        File file = fileChooser.showOpenDialog(stage);
+
+        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("ADB executor", "*adb*.*"));
+
+        if (file.exists()) {
+            helper.setAdbPath(file.getPath());
+            txaLog.appendText(helper.getAdbPath() + "\n");
+            txtFieldAdbPath.setText(helper.getAdbPath());
+            txtFieldAdbPath.setAlignment(Pos.CENTER_RIGHT);
+
+            OutputStream output = null;
+
+            try {
+                output = new FileOutputStream("file.path");
+                prop.setProperty("adbPath", helper.getAdbPath());
+                prop.store(output, null);
+                this.connectDevices();
+
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            } catch (NullPointerException npe) {
+                System.out.println("Output: " + output);
+                npe.printStackTrace();
+
+            } finally {
+                if (output != null) {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        } else {
+            txaLog.appendText("No adb file selected. \n");
+        }
+
+    }
+
+    @FXML
+    void selectActivityFile(Event event) {
+        txaLog.appendText("Lack of implementation.. rsrs\n");
+    }
+
+    private void connectDevices() {
+
+        if (this.getAdb() == null) {
+            ConnectionService service = new ConnectionService(this);
+            Thread thread = new Thread(service);
+            thread.start();
+        }
+
+        ApkFile apk;
+        try {
+            apk = new ApkFile(helper.getAppPath());
+            String manifest = apk.getManifestXml();
+            helper.setActivityName(helper.extractActivity(manifest));
+            txaLog.appendText("apk Activity: " + helper.getActivityName() + "\n");
+            helper.setPackageName(helper.extractPackage(manifest));
+            txaLog.appendText("apk Package: " + helper.getPackageName() + "\n");
+        } catch (NoSuchFileException e) {
+            txaLog.appendText(StringResources.ERROR_APK_PATH);
+            System.out.println(StringResources.ERROR_APK_PATH);
+        } catch (ZipException e) {
+            txaLog.appendText(StringResources.ERROR_FILE_FORMAT);
+            System.out.println(StringResources.ERROR_FILE_FORMAT);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+
+        AndroidDebugBridge.addDeviceChangeListener(new IDeviceChangeListener() {
+
+            @Override
+            public void deviceChanged(IDevice device, int arg1) {
+                // TODO: Check necessity of addDevices(...) here.
+                //addDevices(device);
+            }
+
+            @Override
+            public void deviceConnected(IDevice device) {
+                addDevices(device);
+            }
+
+            @Override
+            public void deviceDisconnected(IDevice device) {
+                removeDevices(device);
+            }
+        });
+    }
+
+    @FXML
+    void install(ActionEvent event) {
+
+        InstallationService service = new InstallationService(this);
+        Thread thread = new Thread(service);
+        thread.start();
+
+        btnLaunch.setDisable(false);
+    }
+
+    @FXML
+    void launch(ActionEvent event) {
+
+        LaunchService service = new LaunchService(this);
+        Thread thread = new Thread(service);
+        thread.start();
+    }
+
+    @FXML
+    void uninstall(ActionEvent event) {
+
+        UninstallationService service = new UninstallationService(this);
+        Thread thread = new Thread(service);
+        thread.start();
+        btnLaunch.setDisable(true);
+    }
+
+    @FXML
+    void ClearHistory(ActionEvent event) {
+        txaLog.clear();
+    }
 
     @FXML
     void showAboutUs(ActionEvent event) {
-    	MultiDeployer.changeScene(StringResources.LAYOUT2);
+        MultiDeployer.changeScene(StringResources.LAYOUT2);
     }
 
     @FXML
     void showBugReport(ActionEvent event) {
-    	MultiDeployer.changeScene(StringResources.LAYOUT3);
-    	
+        MultiDeployer.changeScene(StringResources.LAYOUT3);
+
     }
 
     @FXML
     void openGit(ActionEvent event) {
-    	trigger.addListener(triggerHandler);
-    	trigger.triggerEvent(StringResources.GITHUB);
-	}
-
-    @FXML
-    void openLinkedin(ActionEvent event) {
-    	trigger.addListener(triggerHandler);
-    	trigger.triggerEvent(StringResources.HENRIQUE_LINKEDIN);
+        trigger.addListener(triggerHandler);
+        trigger.triggerEvent(StringResources.GITHUB);
     }
 
     @FXML
     void goToInsper(ActionEvent event) {
-    	trigger.addListener(triggerHandler);
-    	trigger.triggerEvent(StringResources.INSPER);
+        trigger.addListener(triggerHandler);
+        trigger.triggerEvent(StringResources.INSPER);
     }
-    
-    
+
+
     // =========== 			Helpers       ====================
-	
-	private void initLayout() {
 
-		helper = new AppHelper();
-		fileChooser = new FileChooser();
-		trigger = new Trigger();
-		triggerHandler = new TriggerHandler();
-		StringBuilder os = new StringBuilder();
+    private void initLayout() {
 
-		txtFieldAppPath.setFocusTraversable(false);		
-		os.append(System.getProperty("os.name"));
-		lblOS.setText(os.toString());
-		
-		this.showPathHints(os.toString().toLowerCase());		
-	}
+        helper = new AppHelper();
+        fileChooser = new FileChooser();
+        trigger = new Trigger();
+        triggerHandler = new TriggerHandler();
+        StringBuilder os = new StringBuilder();
 
-	
-	private void addDevices(IDevice device) {
-		
-		progressBar.setProgress(1.0);
-		System.out.println(String.format("%s connected", device.getSerialNumber()));
-		
-		if (!cbDevices.getItems().contains(device.getName())) {
-			cbDevices.getItems().add(device.getName());
-		}
-		if(devices.length >= MIN_DEVICES) {
-			enableButtons();
-		}
-		
-		try {
-			txaLog.appendText("Connected: " + device.getName() + " - Battery: "
-					+ device.getBattery().get().toString() + "%\n");
-			devices = adb.getDevices();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		
-	} 
-	
-	private void removeDevices(IDevice device) {
+        txtFieldAppPath.setFocusTraversable(false);
+        os.append(System.getProperty("os.name"));
+        lblOS.setText(os.toString());
 
-		progressBar.setProgress(0.0);
-		System.out.println(String.format("%s disconnected", device.getSerialNumber()));
-		txaLog.appendText("Disconnected: " + device.toString() + "\n");
-		devices = adb.getDevices();
+        this.showPathHints(os.toString().toLowerCase());
+    }
 
-		if (cbDevices.getItems().contains(device.getName())) {
-			cbDevices.getItems().remove(device.getName());
-		}
-		
-		if (cbDevices.getItems().contains(device.getSerialNumber())) {
-			cbDevices.getItems().remove(device.getSerialNumber());
-		}
-		
-		if(devices.length < MIN_DEVICES) {
-			btnLaunch.setDisable(true);
-		}
-	}
-	
-	public void enableButtons() {
-		btnInstall.setDisable(false);
-		btnLaunch.setDisable(false);
-		btnUninstall.setDisable(false);		
-	}
 
-	private void showPathHints(String os) {
+    private void addDevices(IDevice device) {
 
-		if(os.contains("windows")) {
-			txaLog.appendText(StringResources.WINDOWS_DETECTED);
-			txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
-			txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
-			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
-			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH);
+        progressBar.setProgress(1.0);
+        System.out.println(String.format("%s connected", device.getSerialNumber()));
 
-		} else if(os.contains("linux")) {
-			txaLog.appendText(StringResources.LINUX_DETECTED);
-			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
-			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
-			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
-			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
+        if (!cbDevices.getItems().contains(device.getName())) {
+            cbDevices.getItems().add(device.getName());
+        }
 
-		} else if(os.contains("mac")) {
-			txaLog.appendText(StringResources.MAC_DETECTED);
-			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
-			txaLog.appendText(StringResources.EXAMPLE_APK_PATH_MAC);
-			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
-			txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_MAC);
-		}
-	}
+        try {
+            if (devices.length >= MIN_DEVICES) {
+                enableButtons();
+            }
+        } catch (NullPointerException e) {
+            System.out.println(StringResources.DEVICES_IS_NULL);
+        }
+
+        try {
+            txaLog.appendText("Connected: " + device.getName() + " - Battery: "
+                    + device.getBattery().get().toString() + "%\n");
+            devices = adb.getDevices();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void removeDevices(IDevice device) {
+
+        progressBar.setProgress(0.0);
+        System.out.println(String.format("%s disconnected", device.getSerialNumber()));
+        txaLog.appendText("Disconnected: " + device.toString() + "\n");
+        devices = adb.getDevices();
+
+        if (cbDevices.getItems().contains(device.getName())) {
+            cbDevices.getItems().remove(device.getName());
+        }
+
+        if (cbDevices.getItems().contains(device.getSerialNumber())) {
+            cbDevices.getItems().remove(device.getSerialNumber());
+        }
+
+        if (devices.length < MIN_DEVICES) {
+            btnLaunch.setDisable(true);
+        }
+    }
+
+    public void enableButtons() {
+        btnInstall.setDisable(false);
+        btnLaunch.setDisable(false);
+        btnUninstall.setDisable(false);
+    }
+
+    private void showPathHints(String os) {
+
+        if (os.contains("windows")) {
+            txaLog.appendText(StringResources.WINDOWS_DETECTED);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
+            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
+            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH);
+
+        } else if (os.contains("linux")) {
+            txaLog.appendText(StringResources.LINUX_DETECTED);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
+            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
+
+        } else if (os.contains("mac")) {
+            txaLog.appendText(StringResources.MAC_DETECTED);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_MAC);
+            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
+            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_MAC);
+        }
+    }
 
 }

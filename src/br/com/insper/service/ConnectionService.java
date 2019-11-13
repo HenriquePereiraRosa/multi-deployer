@@ -3,6 +3,7 @@
  */
 package br.com.insper.service;
 
+import br.com.insper.service.util.SleepUtil;
 import com.android.ddmlib.AndroidDebugBridge;
 
 import br.com.insper.controller.Layout1Controller;
@@ -22,6 +23,11 @@ public class ConnectionService implements Runnable {
 	@Override
 	public void run() {
 
+		// TODO: remove after test
+		System.out.println("Before 1st sleep");
+		SleepUtil.sleep(3000L);
+		System.out.println("After 1st sleep");
+
 		try {
 			controller.getProgressBar().setProgress(0.5);
 			controller.getTxaLog().appendText("Trying connections...\n");
@@ -33,12 +39,17 @@ public class ConnectionService implements Runnable {
 				return;
 			}
 
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				System.out.println("Thread Sleep Exception\n");
-				e.printStackTrace();
-			}
+			// TODO: remove after test
+			System.out.println("Before 2st sleep");
+			SleepUtil.sleep(1000L);
+			System.out.println("After 2st sleep");
+
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				System.out.println("Thread Sleep Exception\n");
+//				e.printStackTrace();
+//			}
 
 			controller.setDevices(controller.getAdb().getDevices());
 

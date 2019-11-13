@@ -25,26 +25,28 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="947.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.insper.controller.Layout1Controller">
    <children>
       <MenuBar layoutX="-5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="947.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem fx:id="miClose" mnemonicParsing="false" onAction="#closeWindowEvent" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem fx:id="miClearLogs" mnemonicParsing="false" onAction="#ClearHistory" text="Clear Logs" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem fx:id="miAboutUs" mnemonicParsing="false" onAction="#showAboutUs" text="About Us" />
+
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem fx:id="miClose" mnemonicParsing="false" onAction="#closeWindowEvent" text="Close" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+               <items>
+                  <MenuItem fx:id="miClearLogs" mnemonicParsing="false" onAction="#ClearHistory" text="Clear Logs" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem fx:id="miAboutUs" mnemonicParsing="false" onAction="#showAboutUs" text="About Us" />
                   <MenuItem fx:id="miBugReport" mnemonicParsing="false" onAction="#showBugReport" text="Bug Report" />
                   <MenuItem fx:id="miGitCode" mnemonicParsing="false" onAction="#openGit" text="Git code" />
-            </items>
-          </Menu>
-        </menus>
-         <opaqueInsets>
+               </items>
+            </Menu>
+         </menus>
+
+        <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </MenuBar>
@@ -95,7 +97,8 @@
                                     </Label>
                                     <HBox alignment="CENTER" prefHeight="30.0" prefWidth="275.0">
                                        <children>
-                                          <TextField fx:id="txtFieldAppPath" prefHeight="26.0" onAction="#key_enterAppFile" prefWidth="229.0" promptText="Select an app file..." />
+                                          <TextField fx:id="txtFieldAppPath" onAction="#key_enterAppFile" prefHeight="26.0" prefWidth="229.0" promptText="Select an app file..." />
+
                                           <Button fx:id="btnAppFile" alignment="CENTER" mnemonicParsing="false" onAction="#selectAppFile" prefHeight="26.0" prefWidth="34.0" text="..." />
                                        </children>
                                        <VBox.margin>
@@ -109,12 +112,14 @@
                                     </Label>
                                     <HBox alignment="CENTER" prefHeight="30.0" prefWidth="275.0">
                                        <children>
-                                          <TextField fx:id="txtFieldAdbPath" prefHeight="26.0" onAction="#key_enterAdbFile" prefWidth="229.0" promptText="Select the ADB path...">
+                                          <TextField fx:id="txtFieldAdbPath" onAction="#key_enterAdbFile" prefHeight="26.0" prefWidth="229.0" promptText="Select the ADB path...">
+
                                              <HBox.margin>
                                                 <Insets />
                                              </HBox.margin>
                                           </TextField>
-                                          <Button fx:id="btnAdbFile" alignment="CENTER" mnemonicParsing="false" onAction="#selectAdbFile" prefHeight="26.0" prefWidth="34.0" text="..." />
+                                          <Button fx:id="btnAdbFile" alignment="CENTER" mnemonicParsing="false" onAction="#selectAppFile" prefHeight="26.0" prefWidth="34.0" text="..." />
+
                                        </children>
                                        <VBox.margin>
                                           <Insets left="10.0" right="10.0" />

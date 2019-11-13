@@ -51,6 +51,13 @@ public class StringResources {
 	public static String EXAMPLE_ADB_PATH_MAC = "/Users/agile/Library/Android/sdk/platform-tools/adb\n\n";
 
 
+	public static final String DEVICES_IS_NULL = "Devices list is NULL.";
+
+	public static final String ERROR_OLDER_SDK = "ERROR: Not installed due an OLDER SDK.\n";
+	public static final String ERROR_APK_PATH = "ERROR: Please check the apk file path.\n";
+	public static final String ERROR_FILE_FORMAT = "ERROR: Apk file extension error.\n";
+
+
 	//Layout2Controller
 	public static String BTN_CLOSE_LAYOUT2 = "fx:id=\"btnClose\" was not injected: check your FXML file 'Layout2.fxml'.";
 	public static String HLINK_HASHIMOTO = "fx:id=\"hlinkHashimoto\" was not injected: check your FXML file 'Layout2.fxml'.";

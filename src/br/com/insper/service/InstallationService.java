@@ -3,6 +3,7 @@
  */
 package br.com.insper.service;
 
+import br.com.insper.resources.strings.StringResources;
 import com.android.ddmlib.InstallException;
 
 import br.com.insper.controller.Layout1Controller;
@@ -34,8 +35,8 @@ public class InstallationService implements Runnable {
 			npe.printStackTrace();
 			System.out.println(npe.getCause());
 		} catch (InstallException ie) {
-			System.out.println("ERROR: Not installed due an OLDER SDK.\n");
-			controller.getTxaLog().appendText("ERROR: Not installed due an older SDK or wrong apk path.\n");
+			System.out.println(StringResources.ERROR_OLDER_SDK);
+			controller.getTxaLog().appendText(StringResources.ERROR_OLDER_SDK);
 			ie.printStackTrace();
 			System.out.println(ie.getCause());
 		} catch (Exception e) {
