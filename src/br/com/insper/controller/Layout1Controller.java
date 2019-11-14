@@ -575,6 +575,16 @@ public class Layout1Controller {
         MultiDeployer.changeScene(StringResources.LAYOUT3);
 
     }
+    @FXML
+	void changeLanguageEnglish(){
+		ResourceBundle.clearCache();
+		MultiDeployer.changeLanguage("en","US");
+	}
+	@FXML
+	void changeLanguagePortugueseBR(){
+		ResourceBundle.clearCache();
+		MultiDeployer.changeLanguage("pt","BR");
+	}
 
     @FXML
     void openGit(ActionEvent event) {
