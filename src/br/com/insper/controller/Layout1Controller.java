@@ -1,11 +1,6 @@
 package br.com.insper.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
 import java.util.Properties;
@@ -59,6 +54,7 @@ public class Layout1Controller {
 
     private IDevice devices[];
     private Properties prop;
+    private String OS;
 
     @FXML
     private ResourceBundle resources;
@@ -264,6 +260,8 @@ public class Layout1Controller {
         prop = new Properties();
         InputStream input = null;
 
+        String adbPath = findAdbPath(this.OS);
+
         try {
             input = new FileInputStream("file.path");
 
@@ -275,7 +273,11 @@ public class Layout1Controller {
                 txtFieldAppPath.setText(helper.getAppPath());
                 txtFieldAppPath.setAlignment(Pos.CENTER_RIGHT);
             }
-            helper.setAdbPath(prop.getProperty("adbPath"));
+            if(adbPath == null){
+                helper.setAdbPath(prop.getProperty("adbPath"));
+            }else{
+                helper.setAdbPath(adbPath);
+            }
             System.out.println(helper.getAdbPath());
             if (helper.getAdbPath() != null) {
                 txtFieldAdbPath.setText(helper.getAdbPath());
@@ -663,6 +665,8 @@ public class Layout1Controller {
     private void showPathHints(String os) {
 
         if (os.contains("windows")) {
+            this.OS = "windows";
+
             txaLog.appendText(StringResources.WINDOWS_DETECTED);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
@@ -670,6 +674,8 @@ public class Layout1Controller {
             txaLog.appendText(StringResources.EXAMPLE_ADB_PATH);
 
         } else if (os.contains("linux")) {
+            this.OS = "linux";
+
             txaLog.appendText(StringResources.LINUX_DETECTED);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
@@ -677,12 +683,63 @@ public class Layout1Controller {
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
 
         } else if (os.contains("mac")) {
+            this.OS = "mac";
+
             txaLog.appendText(StringResources.MAC_DETECTED);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH_MAC);
             txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
             txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_MAC);
         }
+    }
+
+    public String findAdbPath(String OS){
+
+        Process p = null;
+
+            if(OS.equals(("windows"))){
+                try {
+                    p = Runtime.getRuntime().exec("where adb");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }else {
+                if (OS.equals(("linux")) || OS.equals(("mac"))) {
+                    try {
+                        p = Runtime.getRuntime().exec("which adb");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    return null;
+                }
+            }
+
+        try {
+            if (p != null) {
+                p.waitFor();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        BufferedReader reader= null;
+        if (p != null) {
+            reader = new BufferedReader(new InputStreamReader(
+                        p.getInputStream()));
+        }
+        String line = null;
+            while(true) {
+                try {
+                    if (reader != null && (line = reader.readLine()) == null) break;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return line;
+
+            }
+
+        return null;
     }
 
 }
