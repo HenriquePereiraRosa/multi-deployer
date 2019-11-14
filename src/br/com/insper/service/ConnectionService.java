@@ -23,10 +23,7 @@ public class ConnectionService implements Runnable {
 	@Override
 	public void run() {
 
-		// TODO: remove after test
-		System.out.println("Before 1st sleep");
-		SleepUtil.sleep(3000L);
-		System.out.println("After 1st sleep");
+		SleepUtil.sleep(3000L); // Timing to wait for adb
 
 		try {
 			controller.getProgressBar().setProgress(0.5);
@@ -39,10 +36,7 @@ public class ConnectionService implements Runnable {
 				return;
 			}
 
-			// TODO: remove after test
-			System.out.println("Before 2st sleep");
-			SleepUtil.sleep(1000L);
-			System.out.println("After 2st sleep");
+			SleepUtil.sleep(1000L); //time to wait for adb
 
 //			try {
 //				Thread.sleep(1000);

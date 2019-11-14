@@ -56,6 +56,8 @@ public class StringResources {
 	public static final String ERROR_OLDER_SDK = "ERROR: Not installed due an OLDER SDK.\n";
 	public static final String ERROR_APK_PATH = "ERROR: Please check the apk file path.\n";
 	public static final String ERROR_FILE_FORMAT = "ERROR: Apk file extension error.\n";
+	public static final String ERROR_DEVICE_OFFLINE = "ERROR: Command rejected due too disconnection.\n";
+	public static final String ERROR_DISCONNECTED_DURING_COMMAND =  "ERROR: Device disconnected during operation.\n";
 
 
 	//Layout2Controller

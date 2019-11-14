@@ -628,7 +628,13 @@ public class Layout1Controller {
             txaLog.appendText("Connected: " + device.getName() + " - Battery: "
                     + device.getBattery().get().toString() + "%\n");
             devices = adb.getDevices();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            System.out.println(StringResources.ERROR_DISCONNECTED_DURING_COMMAND);
+            txaLog.appendText(StringResources.ERROR_DISCONNECTED_DURING_COMMAND);
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            System.out.println(StringResources.ERROR_DEVICE_OFFLINE);
+            txaLog.appendText(StringResources.ERROR_DEVICE_OFFLINE);
             e.printStackTrace();
         }
 
