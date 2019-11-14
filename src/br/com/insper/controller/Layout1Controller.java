@@ -11,6 +11,7 @@ import java.nio.file.NoSuchFileException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 
 import com.android.ddmlib.AndroidDebugBridge;
@@ -622,6 +623,11 @@ public class Layout1Controller {
             }
         } catch (NullPointerException e) {
             System.out.println(StringResources.DEVICES_IS_NULL);
+        }
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         try {
