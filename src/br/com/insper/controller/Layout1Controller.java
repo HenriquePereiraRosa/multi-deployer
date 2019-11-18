@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipException;
 
+import br.com.insper.exception.ActivityFirstIndexExtractionExcpetion;
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener;
 import com.android.ddmlib.IDevice;
@@ -508,8 +509,10 @@ public class Layout1Controller {
         } catch (ZipException e) {
             txaLog.appendText(StringResources.ERROR_FILE_FORMAT);
             System.out.println(StringResources.ERROR_FILE_FORMAT);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ActivityFirstIndexExtractionExcpetion e) {
+            txaLog.appendText(StringResources.ERROR_APK_PATH);
         }
 
 
@@ -628,14 +631,13 @@ public class Layout1Controller {
             txaLog.appendText("Connected: " + device.getName() + " - Battery: "
                     + device.getBattery().get().toString() + "%\n");
             devices = adb.getDevices();
+            this.enableButtons();
         } catch (InterruptedException e) {
             System.out.println(StringResources.ERROR_DISCONNECTED_DURING_COMMAND);
             txaLog.appendText(StringResources.ERROR_DISCONNECTED_DURING_COMMAND);
             e.printStackTrace();
         } catch (ExecutionException e) {
             System.out.println(StringResources.ERROR_DEVICE_OFFLINE);
-            txaLog.appendText(StringResources.ERROR_DEVICE_OFFLINE);
-            e.printStackTrace();
         }
 
     }
@@ -644,7 +646,6 @@ public class Layout1Controller {
 
         progressBar.setProgress(0.0);
         System.out.println(String.format("%s disconnected", device.getSerialNumber()));
-        txaLog.appendText("Disconnected: " + device.toString() + "\n");
         devices = adb.getDevices();
 
         if (cbDevices.getItems().contains(device.getName())) {
@@ -656,6 +657,7 @@ public class Layout1Controller {
         }
 
         if (devices.length < MIN_DEVICES) {
+            getBtnInstall().setDisable(true);
             btnLaunch.setDisable(true);
         }
     }
