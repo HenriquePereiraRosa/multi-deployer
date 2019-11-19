@@ -322,7 +322,6 @@ public class Layout1Controller {
 
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Applications files", "*.apk"));
 
-
         if (file.exists()) {
             helper.setAppPath(file.getPath());
             txaLog.appendText(helper.getAppPath() + "\n");
@@ -443,7 +442,6 @@ public class Layout1Controller {
         stage.setScene(scene);
 
         File file = fileChooser.showOpenDialog(stage);
-
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("ADB executor", "*adb*.*"));
 
         if (file.exists()) {
@@ -480,11 +478,6 @@ public class Layout1Controller {
             txaLog.appendText("No adb file selected. \n");
         }
 
-    }
-
-    @FXML
-    void selectActivityFile(Event event) {
-        txaLog.appendText("Lack of implementation.. rsrs\n");
     }
 
     private void connectDevices() {
@@ -636,6 +629,7 @@ public class Layout1Controller {
         }
 
     }
+
 
     private void removeDevices(IDevice device) {
 
