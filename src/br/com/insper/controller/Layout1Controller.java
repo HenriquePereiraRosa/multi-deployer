@@ -359,7 +359,7 @@ public class Layout1Controller {
     }
 
     @FXML
-    void key_enterAdbFile(Event event) {
+    void keyEnterAdbFile(Event event) {
         Parent parent = new Pane();
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
@@ -403,7 +403,7 @@ public class Layout1Controller {
     }
 
     @FXML
-    void key_enterAppFile(Event event) {
+    void keyEnterAppFile(Event event) {
 
         Parent parent = new Pane();
         Scene scene = new Scene(parent);
@@ -672,17 +672,17 @@ public class Layout1Controller {
 
         if (os.contains("windows")) {
             txaLog.appendText(StringResources.WINDOWS_DETECTED);
-            txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
-            txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_WINDOWS);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_WINDOWS);
             txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
-            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH);
+            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_WINDOWS);
 
         } else if (os.contains("linux")) {
             txaLog.appendText(StringResources.LINUX_DETECTED);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
             txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
-            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
+            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_LINUX);
 
         } else if (os.contains("mac")) {
             txaLog.appendText(StringResources.MAC_DETECTED);

@@ -40,12 +40,13 @@ public class StringResources {
 	
 	
 	public static String EXAMPLE_APK_PATH_HEADER = "- Example of .apk path:\n";
-	public static String EXAMPLE_APK_PATH = "C:\\..\\MyApp\\app\\build\\outputs\\apk\\debug\\app-debug.apk\n\n";
+	public static String EXAMPLE_APK_PATH_WINDOWS = "C:\\..\\MyApp\\app\\build\\outputs\\apk\\debug\\app-debug.apk\n\n";
 	public static String EXAMPLE_ADB_PATH_HEADER = "- Example of ADB path:\n";
-	public static String EXAMPLE_ADB_PATH = "C:\\Users\\user\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe\n\n";
+	public static String EXAMPLE_ADB_PATH_WINDOWS = "C:\\Users\\user\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe\n\n";
 
 
-	public static String EXAMPLE_APK_PATH_LINUX = "GET THE PATH FOR LINUX\n\n";
+	public static String EXAMPLE_APK_PATH_LINUX = "/home/user/AndroidStudioProjects/app/build/app/outputs/apk/app.apk\n\n";
+	public static String EXAMPLE_ADB_PATH_LINUX = "/home/user/Android/Sdk/platform-tools/adb\n\n";
 	
 	public static String EXAMPLE_APK_PATH_MAC = "C:\\..\\MyApp\\app\\build\\outputs\\apk\\debug\\app-debug.apk\n\n";
 	public static String EXAMPLE_ADB_PATH_MAC = "/Users/agile/Library/Android/sdk/platform-tools/adb\n\n";
