@@ -11,6 +11,7 @@ import java.nio.file.NoSuchFileException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 
 import br.com.insper.exception.ActivityFirstIndexExtractionExcpetion;
