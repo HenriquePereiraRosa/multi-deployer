@@ -5,6 +5,7 @@ package br.com.insper.service;
 
 import java.io.IOException;
 
+import br.com.insper.resources.strings.StringResources;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.NullOutputReceiver;
 
@@ -46,8 +47,8 @@ public class LaunchService implements Runnable {
 			npe.printStackTrace();
 			System.out.println(npe.getCause());
 		} catch (Exception e) {
-			System.out.println("Exception occured...\n");
-			controller.getTxaLog().appendText("Exception occured..\n");
+			System.out.println(StringResources.ERROR_GENERIC_EXCEPTION);
+			controller.getTxaLog().appendText(StringResources.ERROR_GENERIC_EXCEPTION);
 			e.printStackTrace();
 		}
 		controller.getBtnLaunch().setDisable(false);

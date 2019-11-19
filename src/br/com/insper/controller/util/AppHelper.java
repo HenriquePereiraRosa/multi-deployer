@@ -1,5 +1,7 @@
 package br.com.insper.controller.util;
 
+import br.com.insper.exception.ActivityFirstIndexExtractionExcpetion;
+
 public class AppHelper {
 
 	private String appPath;
@@ -41,7 +43,7 @@ public class AppHelper {
 		this.packageName = packageName;
 	}
 
-	public String extractActivity (String manifest) {
+	public String extractActivity (String manifest) throws ActivityFirstIndexExtractionExcpetion {
 		int firstIndex, lastIndex = 0;
 		boolean check = false;
 		char seq [] = manifest.toCharArray();
@@ -49,7 +51,7 @@ public class AppHelper {
 		firstIndex = manifest.indexOf("<activity", 0);
 		
 		if (firstIndex == -1)
-			return "ERRO"; // TODO: Throw an Exception
+			throw new ActivityFirstIndexExtractionExcpetion("First index of Activity file is minus than one.");
 		
 		for (int i = firstIndex; i < seq.length; i++) {
 			if (check && (manifest.charAt(i) == '"')) {

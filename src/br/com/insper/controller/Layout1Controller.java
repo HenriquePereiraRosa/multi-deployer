@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 
+import br.com.insper.exception.ActivityFirstIndexExtractionExcpetion;
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener;
 import com.android.ddmlib.IDevice;
@@ -359,7 +360,7 @@ public class Layout1Controller {
     }
 
     @FXML
-    void key_enterAdbFile(Event event) {
+    void keyEnterAdbFile(Event event) {
         Parent parent = new Pane();
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
@@ -403,7 +404,7 @@ public class Layout1Controller {
     }
 
     @FXML
-    void key_enterAppFile(Event event) {
+    void keyEnterAppFile(Event event) {
 
         Parent parent = new Pane();
         Scene scene = new Scene(parent);
@@ -509,8 +510,10 @@ public class Layout1Controller {
         } catch (ZipException e) {
             txaLog.appendText(StringResources.ERROR_FILE_FORMAT);
             System.out.println(StringResources.ERROR_FILE_FORMAT);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ActivityFirstIndexExtractionExcpetion e) {
+            txaLog.appendText(StringResources.ERROR_APK_PATH);
         }
 
 
@@ -518,8 +521,7 @@ public class Layout1Controller {
 
             @Override
             public void deviceChanged(IDevice device, int arg1) {
-                // TODO: Check necessity of addDevices(...) here.
-                //addDevices(device);
+                enableButtons();
             }
 
             @Override
@@ -611,31 +613,27 @@ public class Layout1Controller {
     private void addDevices(IDevice device) {
 
         progressBar.setProgress(1.0);
-        System.out.println(String.format("%s connected", device.getSerialNumber()));
-
-        if (!cbDevices.getItems().contains(device.getName())) {
-            cbDevices.getItems().add(device.getName());
-        }
 
         try {
-            if (devices.length >= MIN_DEVICES) {
-                enableButtons();
+            System.out.println(String.format("%s connected", device.getSerialNumber()));
+            devices = adb.getDevices();
+
+            if (!cbDevices.getItems().contains(device.getName())) {
+                cbDevices.getItems().add(device.getName());
             }
-        } catch (NullPointerException e) {
-            System.out.println(StringResources.DEVICES_IS_NULL);
-        }
-        try {
-            TimeUnit.SECONDS.sleep(5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        try {
             txaLog.appendText("Connected: " + device.getName() + " - Battery: "
                     + device.getBattery().get().toString() + "%\n");
-            devices = adb.getDevices();
-        } catch (InterruptedException | ExecutionException e) {
+            this.enableButtons();
+        } catch (InterruptedException e) {
+            System.out.println(StringResources.ERROR_DISCONNECTED_DURING_COMMAND);
+            txaLog.appendText(StringResources.ERROR_DISCONNECTED_DURING_COMMAND);
             e.printStackTrace();
+        } catch (ExecutionException e) {
+            if(cbDevices.getItems().isEmpty())
+                System.out.println(StringResources.ERROR_DEVICE_OFFLINE);
+            else
+                System.out.println(StringResources.WARNING_DUPLICITY_CMD);
         }
 
     }
@@ -644,7 +642,6 @@ public class Layout1Controller {
 
         progressBar.setProgress(0.0);
         System.out.println(String.format("%s disconnected", device.getSerialNumber()));
-        txaLog.appendText("Disconnected: " + device.toString() + "\n");
         devices = adb.getDevices();
 
         if (cbDevices.getItems().contains(device.getName())) {
@@ -656,6 +653,7 @@ public class Layout1Controller {
         }
 
         if (devices.length < MIN_DEVICES) {
+            btnInstall.setDisable(true);
             btnLaunch.setDisable(true);
         }
     }
@@ -670,17 +668,17 @@ public class Layout1Controller {
 
         if (os.contains("windows")) {
             txaLog.appendText(StringResources.WINDOWS_DETECTED);
-            txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
-            txaLog.appendText(StringResources.EXAMPLE_APK_PATH);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_WINDOWS);
+            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_WINDOWS);
             txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
-            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH);
+            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_WINDOWS);
 
         } else if (os.contains("linux")) {
             txaLog.appendText(StringResources.LINUX_DETECTED);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH_HEADER);
             txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
             txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_HEADER);
-            txaLog.appendText(StringResources.EXAMPLE_APK_PATH_LINUX);
+            txaLog.appendText(StringResources.EXAMPLE_ADB_PATH_LINUX);
 
         } else if (os.contains("mac")) {
             txaLog.appendText(StringResources.MAC_DETECTED);

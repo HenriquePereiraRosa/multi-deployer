@@ -23,10 +23,7 @@ public class ConnectionService implements Runnable {
 	@Override
 	public void run() {
 
-		// TODO: remove after test
-		System.out.println("Before 1st sleep");
-		SleepUtil.sleep(3000L);
-		System.out.println("After 1st sleep");
+		SleepUtil.sleep(3000L); // Timing to wait for adb
 
 		try {
 			controller.getProgressBar().setProgress(0.5);
@@ -39,17 +36,7 @@ public class ConnectionService implements Runnable {
 				return;
 			}
 
-			// TODO: remove after test
-			System.out.println("Before 2st sleep");
-			SleepUtil.sleep(1000L);
-			System.out.println("After 2st sleep");
-
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				System.out.println("Thread Sleep Exception\n");
-//				e.printStackTrace();
-//			}
+			SleepUtil.sleep(1000L); // Time to wait for adb
 
 			controller.setDevices(controller.getAdb().getDevices());
 
@@ -65,7 +52,7 @@ public class ConnectionService implements Runnable {
 			controller.getTxaLog().appendText("- Linux hint: /home/user/Android/Sdk/platform-tools/adb\n");
 			controller.getTxaLog().appendText("- Windows hint: C:\\Users\\[user]\\AppData\\Local\\Android\\sdk\\platform-tools\n");
 			controller.getTxaLog().appendText("- Mac hint: /Users/agile/Library/Android/sdk/platform-tools/adb\n");
-			controller.getTxaLog().appendText("** You can also reinstall ADB on an known location. **\n");
+			controller.getTxaLog().appendText("** You can also reinstall ADB on a known location. **\n");
 			e.printStackTrace();
 		}
 	}
