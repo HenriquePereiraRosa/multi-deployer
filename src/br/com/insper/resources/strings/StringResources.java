@@ -13,7 +13,7 @@ public class StringResources {
 	public static final String LAYOUT3 = "br/com/insper/view/Layout3.fxml";
 	public static final String LOGO = "/br/com/insper/resources/img/logo.png";
 	public static final String UPPERBAR_TITLE = " Multi Deployer Of Apps";
-
+	public static final String ERROR_ALREADY_INITIED = "Already initied.";
 	//Layout1Controller
 	public static final String LB_OS = "fx:id=\"lblOS\" was not injected: check your FXML file 'Layout1.fxml'.";
 	public static final String TXT_FIELD_APP_PATH = "fx:id=\"txtFieldAppPath\" was not injected: check your FXML file 'Layout1.fxml'.";

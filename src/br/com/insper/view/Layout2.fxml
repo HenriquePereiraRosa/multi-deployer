@@ -18,11 +18,6 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="947.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.insper.controller.Layout2Controller">
    <children>
-      <Text layoutX="713.0" layoutY="321.0" strokeType="OUTSIDE" strokeWidth="0.0" text=".">
-         <font>
-            <Font size="30.0" />
-         </font>
-      </Text>
       <VBox prefHeight="576.0" prefWidth="947.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER" prefHeight="115.0" prefWidth="947.0">
@@ -65,14 +60,14 @@
             </HBox>
             <VBox alignment="CENTER" prefHeight="346.0" prefWidth="947.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Projeto idealizado em abr/2019">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%projectdateText">
                      <font>
                         <Font size="30.0" />
                      </font>
                   </Text>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="pelo Prof. Dr.">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%bydoctorText">
                            <font>
                               <Font size="30.0" />
                            </font>
@@ -86,7 +81,7 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="e executado por">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%executedbyText">
                            <font>
                               <Font size="30.0" />
                            </font>
@@ -98,12 +93,12 @@
                         </Hyperlink>
                      </children>
                   </HBox>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="para suporte à disciplina">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%suport_diciplinText">
                      <font>
                         <Font size="30.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Desenvolvimento Colaborativo Ágil">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%diciplinnameText">
                      <font>
                         <Font size="30.0" />
                      </font>
@@ -112,7 +107,7 @@
             </VBox>
             <HBox alignment="CENTER" prefHeight="111.0" prefWidth="947.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Powered by " textAlignment="CENTER" wrappingWidth="82.17822265625" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%poweredbyText" textAlignment="CENTER" wrappingWidth="82.17822265625" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="/" textAlignment="CENTER" wrappingWidth="12.3291015625" />
                   <Hyperlink onAction="#goToInsper" prefHeight="26.0" prefWidth="52.0" text="Insper" textAlignment="CENTER" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="/" textAlignment="CENTER" wrappingWidth="16.3291015625" />
