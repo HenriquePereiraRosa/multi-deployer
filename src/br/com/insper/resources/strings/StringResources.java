@@ -8,6 +8,7 @@ public class StringResources {
 
 	//MultiDeployer
 	public static final String INSPER = "https://www.insper.edu.br";
+	public static final String ERROR_ALREADY_INITIED = "Already initied.";
 	public static String LAYOUT1 = "br/com/insper/view/Layout1.fxml";
 	public static String LAYOUT2 = "br/com/insper/view/Layout2.fxml";
 	public static String LAYOUT3 = "br/com/insper/view/Layout3.fxml";

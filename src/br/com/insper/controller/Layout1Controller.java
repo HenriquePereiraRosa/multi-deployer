@@ -47,6 +47,8 @@ import br.com.insper.service.InstallationService;
 import br.com.insper.service.LaunchService;
 import br.com.insper.service.UninstallationService;
 
+import static br.com.insper.resources.strings.StringResources.ERROR_ALREADY_INITIED;
+
 
 public class Layout1Controller {
 
@@ -257,6 +259,8 @@ public class Layout1Controller {
         try {
             System.out.println("Initializing the DEBUG bridge.");
             AndroidDebugBridge.init(false);
+        } catch (IllegalStateException e) {
+            System.out.println(StringResources.ERROR_ALREADY_INITIED);
         } catch (Exception e) {
             txaLog.appendText("Exception in init()\n");
             e.printStackTrace();
@@ -577,6 +581,16 @@ public class Layout1Controller {
         MultiDeployer.changeScene(StringResources.LAYOUT3);
 
     }
+    @FXML
+	void changeLanguageEnglish(){
+		ResourceBundle.clearCache();
+		MultiDeployer.changeLanguage("en","US");
+	}
+	@FXML
+	void changeLanguagePortugueseBR(){
+		ResourceBundle.clearCache();
+		MultiDeployer.changeLanguage("pt","BR");
+	}
 
     @FXML
     void openGit(ActionEvent event) {
