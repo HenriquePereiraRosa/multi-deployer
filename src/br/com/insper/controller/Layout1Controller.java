@@ -657,7 +657,7 @@ public class Layout1Controller {
         }
 
         if (devices.length < MIN_DEVICES) {
-            getBtnInstall().setDisable(true);
+            btnInstall.setDisable(true);
             btnLaunch.setDisable(true);
         }
     }
