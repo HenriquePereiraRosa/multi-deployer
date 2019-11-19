@@ -8,10 +8,10 @@ public class StringResources {
 
 	//MultiDeployer
 	public static final String INSPER = "https://www.insper.edu.br";
-	public static String LAYOUT1 = "br/com/insper/view/Layout1.fxml";
-	public static String LAYOUT2 = "br/com/insper/view/Layout2.fxml";
-	public static String LAYOUT3 = "br/com/insper/view/Layout3.fxml";
-	public static String LOGO = "/br/com/insper/resources/img/logo.png";
+	public static String LAYOUT1 = "Layout1.fxml";
+	public static String LAYOUT2 = "Layout2.fxml";
+	public static String LAYOUT3 = "Layout3.fxml";
+	public static String LOGO = "img/logo.png";
 	public static String UPPERBAR_TITLE = " Multi Deployer Of Apps";
 
 	//Layout1Controller

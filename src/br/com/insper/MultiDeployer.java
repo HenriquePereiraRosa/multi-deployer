@@ -19,7 +19,7 @@ public class MultiDeployer extends Application {
 	private static Stage stage;
 
 
-	public static void main(String[] args) throws ClassNotFoundException {
+	public static void main(String[] args) {
 		Application.launch(MultiDeployer.class, args);
 	}
 
@@ -30,7 +30,7 @@ public class MultiDeployer extends Application {
 		layout1Ctrl = new Layout1Controller();
 
 		try {
-			MultiDeployer.stage.getIcons().add(new Image(getClass().getResourceAsStream(StringResources.LOGO)));
+			MultiDeployer.stage.getIcons().add(new Image(ClassLoader.getSystemResourceAsStream(StringResources.LOGO)));
 			} catch (NullPointerException e) {
 			System.out.println("logo.png not found.");
 			e.printStackTrace();
@@ -44,6 +44,7 @@ public class MultiDeployer extends Application {
 			MultiDeployer.stage.setScene(scene);
 			MultiDeployer.stage.show();
 		} catch (IOException e) {
+			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaa");
 			e.printStackTrace();
 		}
 		
