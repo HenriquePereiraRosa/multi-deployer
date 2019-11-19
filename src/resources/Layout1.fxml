@@ -56,7 +56,7 @@
                <children>
                   <ImageView fx:id="imgInsper" fitHeight="71.0" fitWidth="585.0" onMouseClicked="#goToInsper" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../resources/img/Insper-positivo.png" />
+                        <Image url="@/img/Insper-positivo.png" />
                      </image>
                   </ImageView>
                   <Button alignment="CENTER" mnemonicParsing="false" onAction="#goToInsper" prefHeight="40.0" prefWidth="21.0">
