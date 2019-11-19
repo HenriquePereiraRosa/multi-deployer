@@ -36,14 +36,7 @@ public class ConnectionService implements Runnable {
 				return;
 			}
 
-			SleepUtil.sleep(1000L); //time to wait for adb
-
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				System.out.println("Thread Sleep Exception\n");
-//				e.printStackTrace();
-//			}
+			SleepUtil.sleep(1000L); // Time to wait for adb
 
 			controller.setDevices(controller.getAdb().getDevices());
 
@@ -59,7 +52,7 @@ public class ConnectionService implements Runnable {
 			controller.getTxaLog().appendText("- Linux hint: /home/user/Android/Sdk/platform-tools/adb\n");
 			controller.getTxaLog().appendText("- Windows hint: C:\\Users\\[user]\\AppData\\Local\\Android\\sdk\\platform-tools\n");
 			controller.getTxaLog().appendText("- Mac hint: /Users/agile/Library/Android/sdk/platform-tools/adb\n");
-			controller.getTxaLog().appendText("** You can also reinstall ADB on an known location. **\n");
+			controller.getTxaLog().appendText("** You can also reinstall ADB on a known location. **\n");
 			e.printStackTrace();
 		}
 	}

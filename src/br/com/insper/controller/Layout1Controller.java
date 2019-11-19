@@ -612,32 +612,27 @@ public class Layout1Controller {
     private void addDevices(IDevice device) {
 
         progressBar.setProgress(1.0);
-        System.out.println(String.format("%s connected", device.getSerialNumber()));
-        devices = adb.getDevices();
-
-        if (!cbDevices.getItems().contains(device.getName())) {
-            cbDevices.getItems().add(device.getName());
-        }
 
         try {
-            if (devices.length >= MIN_DEVICES) {
-                enableButtons();
+            System.out.println(String.format("%s connected", device.getSerialNumber()));
+            devices = adb.getDevices();
+
+            if (!cbDevices.getItems().contains(device.getName())) {
+                cbDevices.getItems().add(device.getName());
             }
-        } catch (NullPointerException e) {
-            System.out.println(StringResources.DEVICES_IS_NULL);
-        }
 
-        try {
             txaLog.appendText("Connected: " + device.getName() + " - Battery: "
                     + device.getBattery().get().toString() + "%\n");
-            devices = adb.getDevices();
             this.enableButtons();
         } catch (InterruptedException e) {
             System.out.println(StringResources.ERROR_DISCONNECTED_DURING_COMMAND);
             txaLog.appendText(StringResources.ERROR_DISCONNECTED_DURING_COMMAND);
             e.printStackTrace();
         } catch (ExecutionException e) {
-            System.out.println(StringResources.ERROR_DEVICE_OFFLINE);
+            if(cbDevices.getItems().isEmpty())
+                System.out.println(StringResources.ERROR_DEVICE_OFFLINE);
+            else
+                System.out.println(StringResources.WARNING_DUPLICITY_CMD);
         }
 
     }
