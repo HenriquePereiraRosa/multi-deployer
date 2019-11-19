@@ -520,8 +520,7 @@ public class Layout1Controller {
 
             @Override
             public void deviceChanged(IDevice device, int arg1) {
-                // TODO: Check necessity of addDevices(...) here.
-                //addDevices(device);
+                enableButtons();
             }
 
             @Override
